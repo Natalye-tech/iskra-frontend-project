@@ -1,1 +1,10 @@
-# iskra-frontend-project
+# Искра
+
+
+### `npm start`
+Запускает приложение в режиме разработки
+Адрес: [http://localhost:8888](http://localhost:8888)
+
+
+### `npm run build`
+Создает приложение для публикации в папке `build`
