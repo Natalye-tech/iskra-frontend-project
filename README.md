@@ -3,7 +3,7 @@
 
 ### `npm start`
 Запускает приложение в режиме разработки
-Адрес: [http://localhost:8888](http://localhost:8888)
+Адрес: [http://localhost:3000](http://localhost:3000)
 
 
 ### `npm run build`
