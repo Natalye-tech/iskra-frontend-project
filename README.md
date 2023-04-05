@@ -1,7 +1,7 @@
 # Искра
 
 
-### `npm start`
+### `npm run start`
 Запускает приложение в режиме разработки
 Адрес: [http://localhost:3000](http://localhost:3000)
 
