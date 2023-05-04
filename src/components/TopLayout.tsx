@@ -1,3 +1,4 @@
+// Верхняя панель (верхний уровень)
 import React from 'react'
 import { Breadcrumb, Layout, Menu, ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';
 import { TopRight } from './TopRight'

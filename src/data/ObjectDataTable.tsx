@@ -1,3 +1,4 @@
+// Тестовые колонки и данные для таблицы
 import React, { useState } from 'react';
 import { Table, ConfigProvider } from 'antd';
 import type { ColumnsType } from 'antd/es/table';

@@ -1,3 +1,4 @@
+// Комбобокс с бизнес-прцессами
 import React from 'react'
 import { Select, ConfigProvider, Col, Row, Space } from 'antd';
 import { AppColors, LeftSpaceStyle } from './CssSettings';
@@ -17,7 +18,7 @@ export function BusinessProcessSelect() {
       theme={{
         token: {
           colorPrimary: '#1890ff',
-          colorBorder: '#096dd9'
+          colorBorder: AppColors.mainBlue
         },
       }}
     >

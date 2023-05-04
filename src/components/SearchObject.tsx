@@ -1,3 +1,4 @@
+// Форма поиска по объектам
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import qs from 'qs';

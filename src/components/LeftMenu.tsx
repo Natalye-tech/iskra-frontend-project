@@ -1,3 +1,4 @@
+// Панель с левым меню
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,

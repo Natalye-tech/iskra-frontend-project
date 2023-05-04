@@ -1,3 +1,4 @@
+// Правая часть верхней панели с кнопками
 import React, { useState } from 'react'
 import {Link} from 'react-router-dom'
 import { ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';

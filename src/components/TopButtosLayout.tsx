@@ -1,3 +1,4 @@
+// Панель с кнопками управления (сверху панель второй уровень)
 import React, { useState } from 'react'
 import { Layout, Menu, ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';
 import { AppColors, HeaderButtonStyle, HeaderButtonStyleRight } from './CssSettings';

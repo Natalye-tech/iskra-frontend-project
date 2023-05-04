@@ -11,6 +11,7 @@ export const AppColors = {
     lightTextBlue: '#003eb3', // Светлый синий - текст кнопок
     lightGrey: '#fafafa', // Светлый серый - фон
     darkGrey: '#262626', // Темно-серый - текст контента
+    borderColor: '#d4e5f8', // Светло-голубой - границы, где нужны
 };
 
 // ************************************* MAIN & CENTER LAYOUT ******************
@@ -26,7 +27,6 @@ export const MainLayoutStyle: React.CSSProperties = {
 // Стиль лейаута с контентом (изменяемая часть)
 export const ContentLayoutStyle: React.CSSProperties = {
     minHeight:'calc(100% - 72px)',
-    borderRadius: '0px 8px 8px 0px',
     boxShadow: '1px 1px 1px 0px rgba(122,122,122,0.2)',
     padding: 2,
     backgroundColor: AppColors.mainBg
@@ -54,9 +54,8 @@ export const ImgLogoCloseStyle: React.CSSProperties = {
 
 // Стили основного div левой колонки
 export const MainLeftDiv: React.CSSProperties = {
-  background: '#fafafa',
+  background: AppColors.lightGrey,
   boxShadow: '2px 1px 2px 0px rgba(122,122,122,0.3)',
-  borderRadius: '0px 0px 0px 8px',
   paddingBottom: 10,
 };
 
@@ -73,17 +72,14 @@ export const LeftSpaceStyle: React.CSSProperties = {
   background: AppColors.mainBlue,
   height: 52,
   width: '100%',
-  borderRadius: '8px 0px 0px 8px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '1px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '1px solid #d4e5f8',
+  border: '1px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
 };
 
 // Стили Menu левой колонки
 export const LeftMenuStyle: React.CSSProperties = {
-  borderRadius: '8px',
-  padding: '-10px'
+  //borderRadius: '0px',
 };
 
 // ************************************* TOP LAYOUT ***********************************
@@ -91,12 +87,10 @@ export const LeftMenuStyle: React.CSSProperties = {
 export const TopRightSpaceStyle: React.CSSProperties = {
   marginLeft: '0px',
   marginRight: '0px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '1px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '1px solid #d4e5f8',
+  border: '1px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
   paddingLeft: '15px',
-  borderRadius: '0px 8px 8px 0px',
   background: AppColors.lightGrey,
   height: 50,
   width: '208px'
@@ -106,12 +100,10 @@ export const TopRightSpaceStyle: React.CSSProperties = {
 export const TopLeftSpaceStyle: React.CSSProperties = {
   marginLeft: '0px',
   margin: '0px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '0px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '0px solid #d4e5f8',
+  border: '1px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
   paddingLeft: '15px',
-  borderRadius: '0px',
   paddingTop: '25px',
   background: AppColors.lightBlue,
   height: 50,
@@ -122,10 +114,12 @@ export const TopLeftSpaceStyle: React.CSSProperties = {
 export const TopBreadcrumbSpaceStyle: React.CSSProperties = {
   marginLeft: '0px',
   margin: '0px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '0px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '0px solid #d4e5f8',
+  borderTop: '1px',
+  borderBottom: '1px',
+  borderRight: '0px',
+  borderLeft: '0px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
   paddingLeft: '25px',
   borderRadius: '0px',
   paddingTop: '12px',
@@ -147,28 +141,31 @@ export const HeaderButtonStyle: React.CSSProperties = {
   color: '#096dd9',
   height: 45,
   backgroundColor: AppColors.lightBlue,
-  borderRadius: '8px 0px 0px 8px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '0px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '1px solid #d4e5f8',
+  borderTop: '1px',
+  borderBottom: '1px',
+  borderLeft: '1px',
+  borderRight: '0px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
   marginLeft: '0px',
   marginRight: '0px',
   marginBottom: '7px',
   padding: '6px',
 };
 
-// Стили левой части header - второй уровень с кнопками
+// Стили левой части header - второй уровень с кнопками правая часть с панелью поиска по объектам
 export const HeaderButtonStyleRight: React.CSSProperties = {
   textAlign: 'left',
-  color: '#096dd9',
+  color: AppColors.mainTextBlue,
   height: 45,
   backgroundColor: AppColors.lightBlue,
-  borderRadius: '0px 8px 8px 0px',
-  borderTop: '1px solid #d4e5f8',
-  borderRight: '1px solid #d4e5f8',
-  borderBottom: '1px solid #d4e5f8',
-  borderLeft: '0px solid #d4e5f8',
+  borderRadius: '0px 0px 0px 0px',
+  borderTop: '1px',
+  borderRight: '1px',
+  borderBottom: '1px',
+  borderLeft: '0px',
+  borderStyle: 'solid',
+  borderColor: AppColors.borderColor,
   marginLeft: '0px',
   marginRight: '0px',
   marginBottom: '7px',
