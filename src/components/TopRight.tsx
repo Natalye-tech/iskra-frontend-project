@@ -18,11 +18,12 @@ export function TopRight() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#096dd9',
+          colorPrimary: AppColors.mainBlue,
+          colorPrimaryHover: AppColors.menuHoverButton,
         },
       }}
     >
-      <Space style={TopRightSpaceStyle} align="center">
+      <Space style={TopRightSpaceStyle} size={6} align="center">
         <Tooltip title="Справка">
           <Button type="primary" icon={<QuestionCircleOutlined />} />
         </Tooltip>

@@ -1,4 +1,5 @@
 import {Route, Routes} from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
 import {Objects} from './pages/Objects'
 import {Data} from './pages/Data'
 import {Structure} from './pages/Structure'
@@ -7,16 +8,28 @@ import {Screen} from './pages/Screen'
 import {Screen_processing} from './pages/Screen_processing'
 import {Journal_processing} from './pages/Journal_processing'
 import {TopLayout} from './components/TopLayout'
+import TopButtosLayout from './components/TopButtosLayout';
 import LeftMenu from './components/LeftMenu';
-import { AppColors, MainLayoutStyle, ContentLayoutStyle } from './components/CssSettings';
+import { AppColors, MainLayoutStyle, MainLayoutStyle_, ContentLayoutStyle } from './components/CssSettings';
 import { Layout, ConfigProvider } from 'antd';
+import { useAppDispatch, useAppSelector } from './hooks/hook';
+import { fetchObjects, addNewObject } from './store/objectSlice';
 
 function App() {
+  const { loading, error } = useAppSelector(state => state.objects);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchObjects());
+    console.log(loading);
+  }, [dispatch]);
+
   return (
       <Layout style={MainLayoutStyle}>
         <LeftMenu />
-        <Layout>
+        <Layout style={MainLayoutStyle_}>
           <TopLayout />
+          <TopButtosLayout />
           <Layout style={ContentLayoutStyle}>
             <Routes>
               <Route path="/" element={ <Objects /> } />

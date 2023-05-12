@@ -4,9 +4,6 @@ import TopButtosLayout from './../components/TopButtosLayout';
 
 export function Data() {
   return (
-    <>
-      <TopButtosLayout />
-      <ObjectTable />
-    </>
+    <ObjectTable />
   )
 }

@@ -17,7 +17,7 @@ export function BusinessProcessSelect() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#1890ff',
+          colorPrimary: AppColors.mediumGrey,
           colorBorder: AppColors.mainBlue
         },
       }}

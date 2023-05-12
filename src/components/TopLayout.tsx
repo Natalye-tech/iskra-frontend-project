@@ -12,12 +12,12 @@ export function TopLayout() {
       {
         href: '/',
         title: <HomeOutlined />,
+        style: {color: AppColors.mainBg},
       },
       {
         href: '/Screen',
         title: (
           <>
-            <DesktopOutlined />
             <span>Монитор</span>
           </>
         ),
@@ -28,27 +28,21 @@ export function TopLayout() {
     ];
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#1890ff',
-        },
-      }}
-    >
     <Row>
-      <Col flex="200px">
+      <Col flex="90px">
         <Space style={TopLeftSpaceStyle} align="center">
           <BusinessProcessSelect />
         </Space>
       </Col>
       <Col flex="auto">
         <Space style={TopBreadcrumbSpaceStyle} align="start">
-
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: '#1890ff',
-                colorBgTextHover: '#ffffff',
+                colorPrimary: AppColors.mainBg,
+                colorBgTextHover: AppColors.menuHoverButton,
+                colorText: AppColors.mainBg,
+                colorTextDescription: AppColors.lightGrey,
               },
             }}
           >
@@ -56,13 +50,11 @@ export function TopLayout() {
               items={items}
             />
           </ConfigProvider>
-
         </Space>
       </Col>
       <Col>
         <TopRight />
       </Col>
     </Row>
-    </ConfigProvider>
   )
 }

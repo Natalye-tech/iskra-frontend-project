@@ -13,78 +13,67 @@ import {
   ExportOutlined,
   ClearOutlined,
   CopyOutlined,
-  CodeOutlined
+  CodeOutlined,
+  VerticalAlignBottomOutlined,
+  VerticalAlignTopOutlined
 } from '@ant-design/icons';
-//import { TopRightSearch } from './TopRightSearch'
 import SearchObject from './SearchObject'
 
 const { Header } = Layout;
 
 export function TopButtosLayout() {
   const { Header } = Layout;
-  const [size, setSize] = useState(6);
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#1890ff',
-          colorPrimaryText: '#096dd9',
-        },
-      }}
-    >
     <Row>
       <Col style={HeaderButtonStyle} flex="auto">
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: '#89d4ff',
-                colorPrimaryText: '#096dd9',
-                colorText: '#000000',
-                colorFillQuaternary: '#ff0000',
-                colorFillSecondary: '#ff0000',
+                colorPrimary: AppColors.mainBg,
+                colorPrimaryText: AppColors.mainBlue,
+                colorPrimaryHover: AppColors.lightGrey,
               },
             }}
           >
-            <Space size={size} align="start">
+            <Space size={6} align="start">
               <Tooltip title="Создать">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<FileAddOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<FileAddOutlined />} />
               </Tooltip>
               <Tooltip title="Просмотр">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<EyeOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<EyeOutlined />} />
               </Tooltip>
               <Tooltip title="Изменить">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<FormOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<FormOutlined />} />
               </Tooltip>
               <Tooltip title="Удалить">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<DeleteOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<DeleteOutlined />} />
               </Tooltip>
               <Tooltip title="Импорт">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<ImportOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<VerticalAlignBottomOutlined />} />
               </Tooltip>
               <Tooltip title="Экспорт">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<ExportOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<VerticalAlignTopOutlined />} />
               </Tooltip>
               <Tooltip title="Очистить">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<ClearOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<ClearOutlined />} />
               </Tooltip>
               <Tooltip title="Копировать">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<CopyOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<CopyOutlined />} />
               </Tooltip>
               <Tooltip title="Выгрузить в скрипт">
-                <Button style={{color: '#096dd9'}} type="primary" icon={<CodeOutlined />} />
+                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<CodeOutlined />} />
               </Tooltip>
             </Space>
 
           </ConfigProvider>
       </Col>
       <Col style={HeaderButtonStyleRight} flex='200px'>
-        <Space size={size} align="start">
+        <Space size={6} align="start">
           <SearchObject placeholder="текст для поиска..." style={{ width: 200 }}/>
         </Space>
       </Col>
     </Row>
-    </ConfigProvider>
   )
 }
 

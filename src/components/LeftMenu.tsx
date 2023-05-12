@@ -7,12 +7,19 @@ import {
   DoubleRightOutlined,
   DoubleLeftOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Button, Space, ConfigProvider, Col, Row } from 'antd';
-import type { MenuProps, MenuTheme } from 'antd/es/menu';
-import { StyleProvider, legacyLogicalPropertiesTransformer } from '@ant-design/cssinjs';
-import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import { AppColors, ButtonStyle, ImgLogoOpenStyle, ImgLogoCloseStyle, MainLeftDiv, LeftSlyderStyle, LeftSpaceStyle, LeftMenuStyle } from './CssSettings';
-import {BrowserRouter, Route, Routes, Link, Navigate, useParams, useNavigate} from 'react-router-dom'
+import { Layout, Menu, Button, Space, ConfigProvider } from 'antd';
+import type { MenuProps } from 'antd/es/menu';
+import {
+  AppColors,
+  ButtonStyle,
+  ImgLogoOpenStyle,
+  ImgLogoCloseStyle,
+  MainLeftDiv,
+  LeftSlyderStyle,
+  LeftSpaceStyle,
+  LeftMenuStyle,
+  LeftMenuItemStyle } from './CssSettings';
+import { useNavigate } from 'react-router-dom'
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -21,76 +28,94 @@ function getItem(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
-  children?: MenuItem[],
   style?: React.CSSProperties,
+  children?: MenuItem[],
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
+    style
   } as MenuItem;
 }
 
 const LeftMenu: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [size, setSize] = useState<SizeType>('large');
-  const [current, setCurrent] = useState('obj');
+  const [current, setCurrent] = useState('');
   const navigate = useNavigate();
 
+  // Стили левое меню
+  const MenuItemSt: React.CSSProperties = {
+    color: AppColors.mainBlue,
+    height: '40px',
+    fontWeight: 'normal'
+  };
+
+  const MenuItemStActive: React.CSSProperties = {
+    color: AppColors.mainBlue,
+    height: '40px',
+    fontWeight: 'bold'
+  };
+
   const items: MenuItem[] = [
-    getItem('Органайзер', 'Organizer', <ScheduleOutlined />),
-    getItem('Объекты', 'Objects', <AppstoreOutlined />),
-    getItem('Монитор', 'Screen', <DesktopOutlined />,
+    getItem('Органайзер', 'Organizer', <ScheduleOutlined />, MenuItemSt),
+    getItem('Объекты', 'Objects', <AppstoreOutlined />, MenuItemSt),
+    getItem('Монитор', 'Screen', <DesktopOutlined />, MenuItemSt,
     [
-      getItem('Монитор обработки', 'Screen_processing'),
-      getItem('Журнал обработки', 'Journal_processing'),
+      getItem('Монитор обработки', 'Screen_processing', null, MenuItemSt),
+      getItem('Журнал обработки', 'Journal_processing', null, MenuItemSt),
     ]
   )];
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ========', e);
-    setCurrent(e.key);
-    navigate("/" + e.key);
+     // console.log('click ========', e.item);
+    // e.item.style.fontWeight = 'bold';
+    // if (e.key === 'Organizer') // Пример внешней ссылки
+    // {
+    //   window.open('https://dzen.ru/?yredirect=true','_blank', 'rel=noopener noreferrer');
+    // }
+    // else
+    // {
+      setCurrent(e.key);
+      navigate("/" + e.key);
+    // }
   };
 
   return (
     <div style={MainLeftDiv}>
-      <Sider style={LeftSlyderStyle} trigger={null} collapsible collapsedWidth={50} collapsed={collapsed}>
+      <Sider style={LeftSlyderStyle} trigger={null} collapsible collapsedWidth={45} collapsed={collapsed}>
         <Space
           style={LeftSpaceStyle}
           align="center">
           <img
             style={collapsed ? ImgLogoCloseStyle : ImgLogoOpenStyle}
             alt='Искра ФД'
-            width={collapsed ? '60px' : '156px'}
+            width={collapsed ? '45px' : '156px'}
             height='28px'
-            src={collapsed ? 'iskra_znak.svg' : 'iskra1.svg'}
-            >
-          </img>
+            src={collapsed ? 'iskra_znak.svg' : 'iskra1.svg'}></img>
         </Space>
 
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#ffffff',
-              colorBgContainer: '#89d4ff',
-              colorPrimaryBg: '#096dd9',
-              colorPrimaryText: '#096dd9',
-              colorText: '#096dd9',
-              colorFillSecondary: '#e6f7ff',
-              colorFillQuaternary: '#fafafa',
-              colorBgLayout: '#ffffff',
-              colorTextLightSolid: '#ffffff',
-              colorFillAlter: '#fafafa',
-              margin: 34
+              colorPrimary: AppColors.mainBlue,
+              colorBgContainer: AppColors.lightGrey,
+              colorPrimaryBg: AppColors.mediumGrey,
+              colorPrimaryText: AppColors.mainBlue,
+              colorText: AppColors.mainBlue,
+              colorFillSecondary: AppColors.mediumGrey,
+              colorFillQuaternary: AppColors.mediumGrey,
+              colorBgLayout: AppColors.mediumGrey,
+              colorTextLightSolid: AppColors.mainBg,
+              colorFillAlter: AppColors.lightGrey
             },
           }}
         >
           <Menu
-            style={LeftMenuStyle}
+          //  style={LeftMenuStyle}
             defaultSelectedKeys={['1']}
             mode="inline"
             items={items}
@@ -104,7 +129,8 @@ const LeftMenu: React.FC = () => {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#096dd9',
+              colorPrimary: AppColors.lightGrey,
+              colorText: AppColors.mainBlue,
             },
           }}
         >

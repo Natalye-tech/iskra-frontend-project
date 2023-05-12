@@ -13,6 +13,42 @@ interface DataType {
   comment: string;
 }
 
+interface DataTypeTMP {
+  key?: React.Key;
+  id: number;
+  title: string;
+  userId?: number;
+  completed?: boolean;
+};
+
+// Тип объекта
+type Object = {
+  key?: React.Key;
+  id: number;
+  title: string;
+  userId?: number;
+  completed?: boolean;
+}
+
+export const ColumnsTMP: ColumnsType<Object> = [
+  {
+    title: 'column 1',
+    dataIndex: 'id',
+  },
+  {
+    title: 'column 2',
+    dataIndex: 'title',
+  },
+  {
+    title: 'column 3',
+    dataIndex: 'userId',
+  },
+  {
+    title: 'column 4',
+    dataIndex: 'completed',
+  },
+];
+
 export const Columns: ColumnsType<DataType> = [
   {
     title: 'Мнемокод',
@@ -115,3 +151,16 @@ export const Data: DataType[] = [
     comment: 'comment 7',
   },
 ];
+
+export const DataTMP: DataTypeTMP[] = [
+  {key: '1', id: 1, title: 'delectus aut autem', completed: false},
+  {key: '2', userId: 1, id: 2, title: 'quis ut nam facilis et officia qui', completed: false},
+  {key: '3', userId: 1, id: 3, title: 'fugiat veniam minus', completed: false},
+  {key: '4', userId: 1, id: 4, title: 'et porro tempora', completed: true},
+  {key: '5', userId: 1, id: 5, title: 'laboriosam mollitia et enim quasi adipisci quia provident illum', completed: false},
+  {key: '6', userId: 1, id: 6, title: 'qui ullam ratione quibusdam voluptatem quia omnis', completed: false},
+  {key: '7', userId: 1, id: 7, title: 'illo expedita consequatur quia in', completed: false},
+  {key: '8', userId: 1, id: 8, title: 'quo adipisci enim quam ut ab', completed: true},
+  {key: '9', userId: 1, id: 9, title: 'molestiae perspiciatis ipsa', completed: false},
+  {key: '10', userId: 1, id: 10, title: 'illo est ratione doloremque quia maiores aut', completed: true},
+]
