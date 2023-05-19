@@ -1,27 +1,35 @@
 import {Route, Routes} from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import {Objects} from './pages/Objects'
-import {Data} from './pages/Data'
-import {Structure} from './pages/Structure'
-import {Organizer} from './pages/Organizer'
-import {Screen} from './pages/Screen'
-import {Screen_processing} from './pages/Screen_processing'
-import {Journal_processing} from './pages/Journal_processing'
+import {DRAWER_OBJECT_LIST} from './pages/DRAWER_OBJECT_LIST'
+import {DRAWER_OBJECT_AUDIT} from './pages/DRAWER_OBJECT_AUDIT'
+import {DRAWER_TASK_LIST} from './pages/DRAWER_TASK_LIST'
+import {DRAWER_TASK_TEMPLATE} from './pages/DRAWER_TASK_TEMPLATE'
+import {DRAWER_TASK_SCHEDULE} from './pages/DRAWER_TASK_SCHEDULE'
+import {DRAWER_TASK_MONITOR} from './pages/DRAWER_TASK_MONITOR'
+import {DRAWER_TASK_AUDIT} from './pages/DRAWER_TASK_AUDIT'
+import {DRAWER_ORGANIZER} from './pages/DRAWER_ORGANIZER'
+import {DRAWER_AUDIT} from './pages/DRAWER_AUDIT'
 import {TopLayout} from './components/TopLayout'
 import TopButtosLayout from './components/TopButtosLayout';
 import LeftMenu from './components/LeftMenu';
 import { AppColors, MainLayoutStyle, MainLayoutStyle_, ContentLayoutStyle } from './components/CssSettings';
 import { Layout, ConfigProvider } from 'antd';
 import { useAppDispatch, useAppSelector } from './hooks/hook';
-import { fetchObjects, addNewObject } from './store/objectSlice';
+import { fetchObjects } from './store/objectSlice';
+import { fetchMenuItems } from './store/menuSlice';
+import { fetchColumnItems } from './store/columnSlice';
 
 function App() {
   const { loading, error } = useAppSelector(state => state.objects);
+  const { loading_menu, error_menu } = useAppSelector(state => state.menuitems);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchObjects());
+    dispatch(fetchMenuItems());
+    dispatch(fetchColumnItems());
     console.log(loading);
+    console.log(loading_menu);
   }, [dispatch]);
 
   return (
@@ -32,14 +40,16 @@ function App() {
           <TopButtosLayout />
           <Layout style={ContentLayoutStyle}>
             <Routes>
-              <Route path="/" element={ <Objects /> } />
-              <Route path="/Objects" element={ <Objects /> } />
-              <Route path="/Data" element={ <Data /> } />
-              <Route path="/Structure" element={ <Structure /> } />
-              <Route path="/Organizer" element={ <Organizer /> } />
-              <Route path="/Screen" element={ <Screen /> } />Screen_processing
-              <Route path="/Screen_processing" element={ <Screen_processing /> } />
-              <Route path="/Journal_processing" element={ <Journal_processing /> } />
+              <Route path="/" element={ <DRAWER_OBJECT_LIST /> } />
+              <Route path="/DRAWER_OBJECT_LIST" element={ <DRAWER_OBJECT_LIST /> } />
+              <Route path="/DRAWER_OBJECT_AUDIT" element={ <DRAWER_OBJECT_AUDIT /> } />
+              <Route path="/DRAWER_TASK_LIST" element={ <DRAWER_TASK_LIST /> } />
+              <Route path="/DRAWER_TASK_TEMPLATE" element={ <DRAWER_TASK_TEMPLATE /> } />
+              <Route path="/DRAWER_TASK_SCHEDULE" element={ <DRAWER_TASK_SCHEDULE /> } />
+              <Route path="/DRAWER_TASK_MONITOR" element={ <DRAWER_TASK_MONITOR /> } />
+              <Route path="/DRAWER_TASK_AUDIT" element={ <DRAWER_TASK_AUDIT /> } />
+              <Route path="/DRAWER_ORGANIZER" element={ <DRAWER_ORGANIZER /> } />
+              <Route path="/DRAWER_AUDIT" element={ <DRAWER_AUDIT /> } />
             </Routes>
           </Layout>
         </Layout>

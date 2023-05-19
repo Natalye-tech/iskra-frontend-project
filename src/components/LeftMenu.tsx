@@ -1,9 +1,6 @@
 // Панель с левым меню
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  AppstoreOutlined,
-  ScheduleOutlined,
-  DesktopOutlined,
   DoubleRightOutlined,
   DoubleLeftOutlined,
 } from '@ant-design/icons';
@@ -17,9 +14,11 @@ import {
   MainLeftDiv,
   LeftSlyderStyle,
   LeftSpaceStyle,
-  LeftMenuStyle,
   LeftMenuItemStyle } from './CssSettings';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from './../hooks/hook';
+import { fetchMenuItems } from './../store/menuSlice';
+import { BIcon } from './bicons';
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -27,16 +26,24 @@ type MenuItem = Required<MenuProps>['items'][number];
 function getItem(
   label: React.ReactNode,
   key: React.Key,
-  icon?: React.ReactNode,
+  icon?: React.ReactNode | null | undefined | any,
   style?: React.CSSProperties,
-  children?: MenuItem[],
+  children?: MenuItem[] | null | undefined,
+  link?: string,
+  level?: number,
+  id?: number,
+  pid?: number
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
-    style
+    style,
+    link,
+    level,
+    id,
+    pid
   } as MenuItem;
 }
 
@@ -44,29 +51,54 @@ const LeftMenu: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [current, setCurrent] = useState('');
   const navigate = useNavigate();
+  const menuitems = useAppSelector(state => state.menuitems.list); // Получение данных из стора
+  const [dataMenuItems, setDataMenuItems] = useState<MenuItem[] | undefined>([]); // Преобразование данных из стора
+
+  // Обработка данных из стора перед загрузкой
+  useEffect(() => {
+    const newMenuItems: any[] = menuitems.map((menuElem, index) =>
+      menuElem.level == 1 ?
+      getItem(
+        menuElem.name as React.ReactNode,
+        menuElem.code as string,
+        <BIcon id={menuElem.icon_name as string} />,
+        MenuItemSt as React.CSSProperties,
+        menuitems.map((menuElemItem, index) =>
+          menuElemItem.pid == menuElem.id ? menuElemItem : null).filter(v1 => v1).length > 0 ?
+            menuitems.map((menuElemItem, index) => menuElemItem.pid == menuElem.id ?
+            getItem(
+              menuElemItem.name as React.ReactNode,
+              menuElemItem.code as string,
+              <BIcon id={menuElemItem.icon_name as string} />,
+              MenuItemSt as React.CSSProperties,
+              null,
+              menuElemItem.code as string,
+              menuElemItem.level as number,
+              menuElemItem.id as number,
+              menuElemItem.pid as number
+            ) : null).filter(v2 => v2) : null,
+        menuElem.code as string,
+        menuElem.level as number,
+        menuElem.id as number,
+        menuElem.pid as number
+      ) : null).filter(v1 => v1);
+
+    setDataMenuItems( newMenuItems );
+  }, [menuitems]);
+
+
+// Обработка данных из стора перед загрузкой (если это нужно будет)
+  useEffect(() => {
+    // console.log(" Меню = ", dataMenuItems );
+  }, [dataMenuItems, setDataMenuItems]);
+
 
   // Стили левое меню
   const MenuItemSt: React.CSSProperties = {
     color: AppColors.mainBlue,
-    height: '40px',
+    minHeight: '40px',
     fontWeight: 'normal'
   };
-
-  const MenuItemStActive: React.CSSProperties = {
-    color: AppColors.mainBlue,
-    height: '40px',
-    fontWeight: 'bold'
-  };
-
-  const items: MenuItem[] = [
-    getItem('Органайзер', 'Organizer', <ScheduleOutlined />, MenuItemSt),
-    getItem('Объекты', 'Objects', <AppstoreOutlined />, MenuItemSt),
-    getItem('Монитор', 'Screen', <DesktopOutlined />, MenuItemSt,
-    [
-      getItem('Монитор обработки', 'Screen_processing', null, MenuItemSt),
-      getItem('Журнал обработки', 'Journal_processing', null, MenuItemSt),
-    ]
-  )];
 
   type MenuItem = Required<MenuProps>['items'][number];
 
@@ -115,10 +147,9 @@ const LeftMenu: React.FC = () => {
           }}
         >
           <Menu
-          //  style={LeftMenuStyle}
             defaultSelectedKeys={['1']}
             mode="inline"
-            items={items}
+            items={dataMenuItems}
             onClick={onClick}
             selectedKeys={[current]}
           />

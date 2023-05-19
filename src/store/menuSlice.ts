@@ -3,21 +3,21 @@ import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxj
 // json-server --warch bin.js ./db.json --port 303 http://localhost:303/menu
 
 type MenuItem = {
-  gid: number | null;
+  gid?: number | null;
   id: number | null;
-  pid: string | number | null;
-  name: string | null;
-  code: string | null;
-  comment: string | null;
-  level: number;
-  icon_name: string | null;
-  link: string | null;
+  pid?: string | number | null;
+  name?: string | null;
+  code?: string | null;
+  comment?: string | null;
+  level?: number;
+  icon_name?: string | null;
+  link?: string | null;
 }
 
 type MenuItemState = {
   list: MenuItem[];
-  loading: boolean;
-  error: string | null;
+  loading_menu: boolean;
+  error_menu: string | null;
 }
 
 export const fetchMenuItems = createAsyncThunk<MenuItem[], undefined, {rejectValue: string}>(
@@ -36,8 +36,8 @@ export const fetchMenuItems = createAsyncThunk<MenuItem[], undefined, {rejectVal
 
 const initialState: MenuItemState = {
   list: [],
-  loading: false,
-  error: null,
+  loading_menu: false,
+  error_menu: null,
 }
 
 const menuItemSlice = createSlice({
@@ -47,16 +47,16 @@ const menuItemSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchMenuItems.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading_menu = true;
+        state.error_menu = null;
       })
       .addCase(fetchMenuItems.fulfilled, (state, action) => {
         state.list = action.payload;
-        state.loading = false;
+        state.loading_menu = false;
       })
       .addMatcher(isError, (state, action: PayloadAction<string>) => {
-        state.error = action.payload;
-        state.loading = false;
+        state.error_menu = action.payload;
+        state.loading_menu = false;
       });
   }
 });

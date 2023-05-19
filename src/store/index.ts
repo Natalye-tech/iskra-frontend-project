@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import menuItemReducer from './menuSlice';
 import objectReducer from './objectSlice';
+import columnReducer from './columnSlice';
 
 const store = configureStore({
   reducer: {
     menuitems: menuItemReducer,
     objects: objectReducer,
+    columns: columnReducer,
   },
 });
 

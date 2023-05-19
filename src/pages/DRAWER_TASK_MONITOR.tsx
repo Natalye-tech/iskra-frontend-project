@@ -1,10 +1,10 @@
 import React from 'react'
 
-export function Organizer() {
+export function DRAWER_TASK_MONITOR() {
   const DivStyle = {
     margin: '20px',
   };
   return (
-    <div style={DivStyle}>Органайзер</div>
+    <div style={DivStyle}>Монитор</div>
   )
 }

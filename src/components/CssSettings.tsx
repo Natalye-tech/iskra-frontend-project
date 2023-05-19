@@ -5,10 +5,10 @@ import React from 'react'
 export const AppColors = {
     mainBg: '#ffffff', // Основной - фон
     mainBlue: '#0049b0', // Основной синий
-    darkBlue: '#05357b', // Основной синий
+    darkBlue: '#05357b', // Темный синий для текста
     lightGrey: '#f5f5f5', // Светлый серый
     darkGrey: '#262626', // Темно-серый - текст контента
-    mediumGrey: '#e5e5e5', // Светло-голубой - границы, где нужны
+    mediumGrey: '#e5e5e5', // Серый
     menuHoverButton: '#0065ff', // Цвет фона при наведении на кнопку
 };
 

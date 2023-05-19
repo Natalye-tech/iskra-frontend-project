@@ -4,7 +4,7 @@ import { Breadcrumb, Layout, Menu, ConfigProvider, Col, Row, Button, Space, Tool
 import { TopRight } from './TopRight'
 import { BusinessProcessSelect } from './BusinessProcessSelect'
 import { AppColors, TopLeftSpaceStyle, TopBreadcrumbSpaceStyle } from './CssSettings';
-import { HomeOutlined, DesktopOutlined } from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 
 export function TopLayout() {
 
