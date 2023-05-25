@@ -17,8 +17,9 @@ import {
   LeftMenuItemStyle } from './CssSettings';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './../hooks/hook';
-import { fetchMenuItems } from './../store/menuSlice';
+import { fetchMenuItems, changeActiveMenuItem } from './../store/menuSlice';
 import { BIcon } from './bicons';
+import { useDispatch } from 'react-redux';
 
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
@@ -45,14 +46,19 @@ function getItem(
     id,
     pid
   } as MenuItem;
-}
+};
 
 const LeftMenu: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [current, setCurrent] = useState('');
+  const current = useAppSelector(state => state.menuitems.activ_menu_item);
   const navigate = useNavigate();
   const menuitems = useAppSelector(state => state.menuitems.list); // Получение данных из стора
   const [dataMenuItems, setDataMenuItems] = useState<MenuItem[] | undefined>([]); // Преобразование данных из стора
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // console.log(" current =========== ", current);
+  }, [ current ]);
 
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
@@ -111,7 +117,7 @@ const LeftMenu: React.FC = () => {
     // }
     // else
     // {
-      setCurrent(e.key);
+      dispatch(changeActiveMenuItem(e.key));
       navigate("/" + e.key);
     // }
   };

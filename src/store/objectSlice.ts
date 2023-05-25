@@ -1,12 +1,21 @@
 import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
 type Object = {
-  key?: React.Key;
-  id: number;
-  title: string;
-  userId?: number;
-  completed?: boolean;
-}
+  key?: React.Key | null | undefined,
+  id?: number | null | undefined,
+  name?: string | null | undefined,
+  code?: string | null | undefined,
+  workflow_id?: number | null | undefined,
+  comment?: string | null | undefined,
+  isHistory?: boolean | number | null | undefined,
+  isSystem?: boolean | number | null | undefined,
+  isExport?: boolean | number | null | undefined,
+  status?: number | null | undefined,
+  dtCreate?: string  | null | undefined,
+  dtUpdate?: string | null | undefined,
+  userCreate?: string | null | undefined,
+  userUpdate?: string | null | undefined,
+};
 
 type ObjectsState = {
   list: Object[] | any[];
@@ -17,7 +26,7 @@ type ObjectsState = {
 export const fetchObjects = createAsyncThunk<Object[] | any[], undefined, {rejectValue: string}>(
     'object/fetchObjects',
     async function (_, { rejectWithValue }) {
-        const response = await fetch("http://localhost:303/objects");//('https://jsonplaceholder.typicode.com/todos?_limit=10');
+        const response = await fetch("http://localhost:303/objects");
 
         if (!response.ok) {
           return rejectWithValue('Server Error!');

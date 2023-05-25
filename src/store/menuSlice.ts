@@ -16,6 +16,7 @@ type MenuItem = {
 
 type MenuItemState = {
   list: MenuItem[];
+  activ_menu_item: string;
   loading_menu: boolean;
   error_menu: string | null;
 }
@@ -36,6 +37,7 @@ export const fetchMenuItems = createAsyncThunk<MenuItem[], undefined, {rejectVal
 
 const initialState: MenuItemState = {
   list: [],
+  activ_menu_item: 'DRAWER_OBJECT',
   loading_menu: false,
   error_menu: null,
 }
@@ -43,7 +45,11 @@ const initialState: MenuItemState = {
 const menuItemSlice = createSlice({
   name: 'menuitems',
   initialState,
-  reducers: {},
+  reducers: {
+    changeActiveMenuItem(state, action) {
+        state.activ_menu_item = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMenuItems.pending, (state) => {
@@ -61,6 +67,7 @@ const menuItemSlice = createSlice({
   }
 });
 
+export const {changeActiveMenuItem} = menuItemSlice.actions;
 export default menuItemSlice.reducer;
 
 function isError(action: AnyAction) {

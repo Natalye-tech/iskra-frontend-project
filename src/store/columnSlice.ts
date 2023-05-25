@@ -15,6 +15,14 @@ type ColumnItem = {
   comment?: string | null;
   level?: number;
   icon_name?: string | null;
+  actionType?: string | null;
+  priority?: boolean | string | number | null;
+  dataField?: string | null;
+  iconName?: string | null;
+  url?: string | null;
+  display?: boolean | number | null;
+  sortAllowed?: boolean | number | null;
+  filterAllowed?: boolean | number | null;
 }
 
 type ColumnItemState = {
@@ -33,7 +41,7 @@ export const fetchColumnItems = createAsyncThunk<ColumnItem[], undefined, {rejec
       }
 
       const data = await response.json();
-      console.log("!!!!!!!!!!!!!!!!!!!column data", data);
+      // console.log("!!!!!!!!!!!!!!!!!!!column data", data);
       return data;
     }
 );

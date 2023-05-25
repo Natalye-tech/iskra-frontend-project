@@ -1,9 +1,26 @@
 // Таблица объектов
-import React, { useState, useEffect } from 'react';
-import { Table, ConfigProvider } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import React, { useState, useEffect, useRef } from 'react';
+import { Table, Tooltip, ConfigProvider, Button, Input, Space, TableProps, InputRef, Pagination, PaginationProps } from 'antd';
+import type { ColumnsType, FilterValue, SorterResult, ColumnType } from 'antd/es/table/interface';
 import { AppColors } from './CssSettings';
 import { useAppDispatch, useAppSelector } from './../hooks/hook';
+import { fetchObjects } from './../store/objectSlice';
+import { fetchColumnItems } from './../store/columnSlice';
+import { EyeOutlined, EditOutlined } from '@ant-design/icons';
+import type { FilterConfirmProps } from 'antd/es/table/interface';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from "react-highlight-words";
+import type { TablePaginationConfig } from 'antd/es/table';
+import { BIcon } from './bicons';
+
+const pagination = <Pagination showQuickJumper defaultCurrent={2} total={500}/>
+
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Record<string, FilterValue>;
+};
 
 // Тип объекта
 type Object = {
@@ -11,56 +28,212 @@ type Object = {
   id?: number | null | undefined,
   name?: string | null | undefined,
   code?: string | null | undefined,
+  workflow_id?: number | null | undefined,
+  comment?: string | null | undefined,
+  isHistory?: boolean | number | null | undefined,
+  isSystem?: boolean | number | null | undefined,
+  isExport?: boolean | number | null | undefined,
+  status?: number | null | undefined,
+  dtCreate?: string  | null | undefined,
+  dtUpdate?: string | null | undefined,
+  userCreate?: string | null | undefined,
+  userUpdate?: string | null | undefined,
 };
 
-const columns_: ColumnsType<Object> = [
-  {
-    key: 0 as number,
-    title: "Name" as string,
-    dataIndex: "name" as string
-  },
-];
+type DataIndex = keyof Object;
 
 const ObjectTable: React.FC = () => {
   const columnsData = useAppSelector(state => state.columns.list); // Получение данных для колонок из стора
-  const [columnsTable, setColumnsTable] = useState<ColumnsType<Object> | ColumnsType<any>>(columns_);  // Преобразование для данных из стора
+  const [columnsTable, setColumnsTable] = useState<ColumnsType<Object> | ColumnsType<any>>();  // Преобразование для данных из стора
   const objects = useAppSelector(state => state.objects.list); // Получение данных из стора
   const [dataTable, setDataTable] = useState<Object[] | undefined>([]); // Преобразование данных из стора
+  const { loading, error } = useAppSelector(state => state.objects);
+  const dispatch = useAppDispatch();
+  const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  const onChange: TableProps<Object>['onChange'] = (pagination, filters, sorter, extra) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<Object> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Поиск
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Очистить
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Отфильтровать
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Закрыть
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    // onFilter: (value, record) => alert(value),
+      // record[dataIndex]
+      //   .toString()
+      //   .toLowerCase()
+      //   .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  useEffect(() => {
+    dispatch(fetchObjects());
+    dispatch(fetchColumnItems());
+  }, [dispatch]);
 
   // Обработка данных колонок из стора перед загрузкой
   useEffect(() => {
-      console.log(" Объекты Columns = ", columnsData[0], typeof columnsData[0] );
-      setColumnsTable( columnsData.map((cl) => (
-        {
+      let newColumns: any[] = [];
+
+      newColumns = columnsData.map((cl) => {
+
+        let dataIndex: any = "";
+        let title: string | Element | any = cl.name as string;
+        let sorter: any = null;
+        let search: ColumnType<Object> | null = null;
+
+        switch (cl.actionType) {
+          case "ID":
+            dataIndex = "id";
+            sorter = (a: any, b: any) => a[dataIndex] - b[dataIndex];
+            break;
+          case "TEXT":
+            dataIndex = cl.dataField;
+            sorter = (a: any, b: any) => a[dataIndex] - b[dataIndex];
+            search = {...getColumnSearchProps(dataIndex)};
+            break;
+          case "ICON_CHECK":
+            dataIndex = cl.dataField;
+            title = <BIcon id={cl.iconName as string} />;
+            break;
+          case "BUTTON":
+            dataIndex = cl.iconName;
+            title = <BIcon id={cl.iconName as string} />;
+            break;
+          default:
+            dataIndex = null;
+        }
+
+        return cl.actionType === "TEXT" ? {
           key: cl.id as number,
-          title: cl.name as string,
-          dataIndex: "column_"+cl.id as string
-        }))
-      );
+          title: title,
+          dataIndex: dataIndex as string,
+          sorter: sorter,
+          ...getColumnSearchProps(dataIndex)
+        } : {
+          key: cl.id as number,
+          title: title,
+          dataIndex: dataIndex as string,
+          sorter: sorter
+        }
+      });
+
+      setColumnsTable(newColumns);
   }, [columnsData]);
 
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
-    console.log(" Объекты из хранилища useEffect objects = ", objects );
-    console.log(" Объекты Columns!!!!!!!!!! = ", columnsTable );
+    console.log("++++++++ Объекты из хранилища useEffect objects = ", objects );
     setDataTable( objects.map((object) => (
         {
           'key': object.id,
-          'column_30': object.id,
-          'column_31': 1,
-          'column_32': 1,
-          'column_33': object.name,
-        } as Object))
+          'EyeOutlined': <Tooltip title="Просмотр"><Button type="text" icon={<BIcon id={'EyeOutlined' as string} />} size={'small'} /></Tooltip>,
+          'FormOutlined': <Tooltip title="Редактировать"><Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} /></Tooltip>,
+          ...object,
+          'isHistory': <BIcon id={object.isHistory as string} />,
+          'isSystem': <BIcon id={object.isSystem as string} />,
+          'isExport': <BIcon id={object.isExport as string} />,
+          } as Object))
      );
   }, [objects]);
 
   //-------------------------------------------------------------------
   useEffect(() => {
-    console.log(" \n\nCCCCCCCCCCCCCCCCCCCCCCCCCC = ", columnsTable );
+    console.log(" \n\nЗагрузился список колонок = ", columnsTable );
   }, [columnsTable, setColumnsTable]);
 
   useEffect(() => {
-    console.log(" \n\nDDDDDDDDDDDDDDDDDDDDDDDDDDDDD = ", dataTable );
+    console.log(" \n\nЗагрузились данные = ", dataTable );
   }, [dataTable, setDataTable]);
 
   return (
@@ -69,6 +242,7 @@ const ObjectTable: React.FC = () => {
         token: {
           colorPrimary: AppColors.mainBlue,
           colorPrimaryBg: AppColors.lightGrey,
+          colorText: AppColors.darkGrey
         },
       }}
     >
@@ -80,12 +254,11 @@ const ObjectTable: React.FC = () => {
         dataSource={dataTable}
         size={'small'}
         style={{ margin: '10px' }}
+        pagination={tableParams.pagination}
+        onChange={onChange}
       />
     </ConfigProvider>
   );
 };
 
 export default ObjectTable;
-
-
-// [{"id":201,"workflow_id":1,"name":"Тестовый объект","code":"TIC_TEST","comment":"Тест","isHistory":0,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-03-06T07:27:20.568+00:00","dtUpdate":"2023-03-06T07:27:20.568+00:00","userCreate":null,"userUpdate":null},{"id":200,"workflow_id":1,"name":"Справочник периодов","code":"TIL_PERIOD","comment":"ТЕСТ","isHistory":0,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-03-03T10:16:19.974+00:00","dtUpdate":"2023-03-03T10:16:19.974+00:00","userCreate":null,"userUpdate":null},{"id":199,"workflow_id":1,"name":"Справочник эталонной разметки сделок точками продаж","code":"DEAL_SAMPLE_POINT_D","comment":"","isHistory":0,"isSystem":1,"isExport":0,"status":100,"dtCreate":"2023-01-12T08:57:17.194+00:00","dtUpdate":"2023-01-12T08:57:17.197+00:00","userCreate":null,"userUpdate":null},{"id":198,"workflow_id":1,"name":"Справочник эталонной разметки счетов точками продаж","code":"ACNT_SAMPLE_POINT_D","comment":"","isHistory":0,"isSystem":1,"isExport":0,"status":100,"dtCreate":"2023-01-12T08:59:22.046+00:00","dtUpdate":"2023-01-12T08:59:22.049+00:00","userCreate":null,"userUpdate":null},{"id":197,"workflow_id":1,"name":"Реестр раскраски сделок точками продаж","code":"DEAL_MARK_POINT_R","comment":"","isHistory":1,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-01-12T08:48:00.731+00:00","dtUpdate":"2023-01-12T08:48:00.734+00:00","userCreate":null,"userUpdate":null},{"id":196,"workflow_id":1,"name":"Реестр раскраски счетов точками продаж","code":"ACNT_MARK_POINT_R","comment":"","isHistory":1,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-01-12T08:38:17.943+00:00","dtUpdate":"2023-01-12T08:38:17.961+00:00","userCreate":null,"userUpdate":null},{"id":194,"workflow_id":1,"name":"test_name","code":"test_code","comment":"","isHistory":0,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-01-12T03:12:30.759+00:00","dtUpdate":"2023-01-12T03:12:30.759+00:00","userCreate":null,"userUpdate":null},{"id":193,"workflow_id":1,"name":"Разработка","code":"test_001","comment":"comment","isHistory":1,"isSystem":0,"isExport":0,"status":100,"dtCreate":"2023-01-12T11:00:01.242+00:00","dtUpdate":"2023-01-12T11:00:01.299+00:00","userCreate":null,"userUpdate":null}]

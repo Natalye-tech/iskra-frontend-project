@@ -15,21 +15,14 @@ import LeftMenu from './components/LeftMenu';
 import { AppColors, MainLayoutStyle, MainLayoutStyle_, ContentLayoutStyle } from './components/CssSettings';
 import { Layout, ConfigProvider } from 'antd';
 import { useAppDispatch, useAppSelector } from './hooks/hook';
-import { fetchObjects } from './store/objectSlice';
 import { fetchMenuItems } from './store/menuSlice';
-import { fetchColumnItems } from './store/columnSlice';
 
 function App() {
-  const { loading, error } = useAppSelector(state => state.objects);
-  const { loading_menu, error_menu } = useAppSelector(state => state.menuitems);
+  // const { loading_menu, error_menu } = useAppSelector(state => state.menuitems);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchObjects());
     dispatch(fetchMenuItems());
-    dispatch(fetchColumnItems());
-    console.log(loading);
-    console.log(loading_menu);
   }, [dispatch]);
 
   return (
