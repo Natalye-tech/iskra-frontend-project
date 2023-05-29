@@ -90,11 +90,11 @@ export const BIcon: React.FC<BIconProps> = ({ id }) => {
     { id:'SolutionOutlined', item: <SolutionOutlined /> },
     { id:'EyeOutlined', item: <EyeOutlined /> },
     { id:'1', item: <CheckCircleTwoTone twoToneColor="#52c41a" /> },
-    { id:'0', item: <CloseCircleTwoTone twoToneColor="#ff5b35" /> }
+    { id:'0', item: null }
   ];
 
   const Item: BIconItem | undefined = BIcons.find(it => it.id == id);
-  let bicon: any | Element = <StarOutlined />;
+  let bicon: any | Element = null;
   if (Item != undefined && Item?.item) bicon = Item?.item;
 
   return (bicon)

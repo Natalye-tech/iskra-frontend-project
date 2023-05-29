@@ -13,11 +13,10 @@ import {
   ImgLogoCloseStyle,
   MainLeftDiv,
   LeftSlyderStyle,
-  LeftSpaceStyle,
-  LeftMenuItemStyle } from './CssSettings';
+  LeftSpaceStyle } from './CssSettings';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from './../hooks/hook';
-import { fetchMenuItems, changeActiveMenuItem } from './../store/menuSlice';
+import { useAppSelector } from './../hooks/hook';
+import { changeActiveMenuItem } from './../store/menuSlice';
 import { BIcon } from './bicons';
 import { useDispatch } from 'react-redux';
 
@@ -57,21 +56,21 @@ const LeftMenu: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log(" current =========== ", current);
+    console.log(" current =========== ", current);
   }, [ current ]);
 
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
     const newMenuItems: any[] = menuitems.map((menuElem, index) =>
-      menuElem.level == 1 ?
+      menuElem.level === 1 ?
       getItem(
         menuElem.name as React.ReactNode,
         menuElem.code as string,
         <BIcon id={menuElem.icon_name as string} />,
         MenuItemSt as React.CSSProperties,
         menuitems.map((menuElemItem, index) =>
-          menuElemItem.pid == menuElem.id ? menuElemItem : null).filter(v1 => v1).length > 0 ?
-            menuitems.map((menuElemItem, index) => menuElemItem.pid == menuElem.id ?
+          menuElemItem.pid === menuElem.id ? menuElemItem : null).filter(v1 => v1).length > 0 ?
+            menuitems.map((menuElemItem, index) => menuElemItem.pid === menuElem.id ?
             getItem(
               menuElemItem.name as React.ReactNode,
               menuElemItem.code as string,
@@ -133,7 +132,7 @@ const LeftMenu: React.FC = () => {
             alt='Искра ФД'
             width={collapsed ? '45px' : '156px'}
             height='28px'
-            src={collapsed ? 'iskra_znak.svg' : 'iskra1.svg'}></img>
+            src={collapsed ? '/img/iskra_znak.svg' : '/img/iskra1.svg'}></img>
         </Space>
 
         <ConfigProvider

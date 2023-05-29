@@ -26,14 +26,11 @@ type ObjectsState = {
 export const fetchObjects = createAsyncThunk<Object[] | any[], undefined, {rejectValue: string}>(
     'object/fetchObjects',
     async function (_, { rejectWithValue }) {
-        const response = await fetch("http://localhost:303/objects");
-
+        const response = await fetch('http://localhost:8080/listObjectItems?workflow_id=1');
         if (!response.ok) {
           return rejectWithValue('Server Error!');
         }
-
         const data = await response.json();
-        // console.log(" ----------- ", data);
         return data;
     }
 );

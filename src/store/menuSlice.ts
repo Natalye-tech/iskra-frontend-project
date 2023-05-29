@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
-// json-server --warch bin.js ./db.json --port 303 http://localhost:303/menu
-
 type MenuItem = {
   gid?: number | null;
   id: number | null;
