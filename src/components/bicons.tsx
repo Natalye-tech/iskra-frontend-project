@@ -40,6 +40,10 @@ import {
   SolutionOutlined,
   CheckCircleTwoTone,
   CloseCircleTwoTone,
+  FileJpgOutlined,
+  PicLeftOutlined,
+  DatabaseOutlined,
+  AuditOutlined,
 } from '@ant-design/icons';
 
 interface BIconProps {
@@ -77,6 +81,7 @@ export const BIcon: React.FC<BIconProps> = ({ id }) => {
     { id:'CopyOutlined', item: <CopyOutlined /> },
     { id:'CodeOutlined', item: <CodeOutlined /> },
     { id:'VerticalAlignBottomOutlined', item: <VerticalAlignBottomOutlined /> },
+    { id:'VerticalAlignTopOutlined', item: <VerticalAlignTopOutlined /> },
     { id:'QuestionCircleOutlined', item: <QuestionCircleOutlined /> },
     { id:'UserOutlined', item: <UserOutlined /> },
     { id:'MailOutlined', item: <MailOutlined /> },
@@ -89,6 +94,10 @@ export const BIcon: React.FC<BIconProps> = ({ id }) => {
     { id:'ApartmentOutlined', item: <ApartmentOutlined /> },
     { id:'SolutionOutlined', item: <SolutionOutlined /> },
     { id:'EyeOutlined', item: <EyeOutlined /> },
+    { id:'FileJpgOutlined', item: <FileJpgOutlined /> },
+    { id: 'PicLeftOutlined', item: <PicLeftOutlined />},
+    { id: 'DatabaseOutlined', item: <DatabaseOutlined />},
+    { id: 'AuditOutlined', item: <AuditOutlined />},
     { id:'1', item: <CheckCircleTwoTone twoToneColor="#52c41a" /> },
     { id:'0', item: null }
   ];

@@ -16,6 +16,13 @@ import { AppColors, MainLayoutStyle, MainLayoutStyle_, ContentLayoutStyle } from
 import { Layout, ConfigProvider } from 'antd';
 import { useAppDispatch, useAppSelector } from './hooks/hook';
 import { fetchMenuItems } from './store/menuSlice';
+import { fetchActionTB } from './store/actionSlice';
+import { fetchActionWorkflow } from './store/listWorkflowsSlice';
+
+// select * from ubp_core.fn_list_dict_action('DRAWER');
+// select * from ubp_core.dict_action where pid = 20;
+// update ubp_core.dict_action set icon_name = 'AuditOutlined' where id = 43;
+    // <meta name="viewport" content="initial-scale=1,width=device-width"/>
 
 function App() {
   // const { loading_menu, error_menu } = useAppSelector(state => state.menuitems);
@@ -23,6 +30,8 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchMenuItems());
+    dispatch(fetchActionTB());
+    dispatch(fetchActionWorkflow());
   }, [dispatch]);
 
   return (

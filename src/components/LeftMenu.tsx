@@ -34,12 +34,14 @@ function getItem(
   id?: number,
   pid?: number
 ): MenuItem {
+  // console.log('-----------icon', icon);
+  if (icon === null) icon = 'StarOutlined';
   return {
+    label,
     key,
     icon,
-    children,
-    label,
     style,
+    children,
     link,
     level,
     id,
@@ -56,17 +58,18 @@ const LeftMenu: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(" current =========== ", current);
+    // console.log(" current =========== ", current);
   }, [ current ]);
 
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
+    // console.log(" menuitems =========== ", menuitems);
     const newMenuItems: any[] = menuitems.map((menuElem, index) =>
       menuElem.level === 1 ?
       getItem(
         menuElem.name as React.ReactNode,
         menuElem.code as string,
-        <BIcon id={menuElem.icon_name as string} />,
+        <BIcon id={menuElem.iconName !=null ? menuElem.iconName as string : 'StarOutlined' as string} />,
         MenuItemSt as React.CSSProperties,
         menuitems.map((menuElemItem, index) =>
           menuElemItem.pid === menuElem.id ? menuElemItem : null).filter(v1 => v1).length > 0 ?
@@ -74,7 +77,7 @@ const LeftMenu: React.FC = () => {
             getItem(
               menuElemItem.name as React.ReactNode,
               menuElemItem.code as string,
-              <BIcon id={menuElemItem.icon_name as string} />,
+              <BIcon id={menuElemItem.iconName !=null ? menuElemItem.iconName as string : 'StarOutlined' as string} />,
               MenuItemSt as React.CSSProperties,
               null,
               menuElemItem.code as string,

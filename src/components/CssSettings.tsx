@@ -135,9 +135,6 @@ export const HeaderButtonStyle: React.CSSProperties = {
   color: AppColors.mainBlue,
   height: 45,
   backgroundColor: AppColors.mainBg,
-  marginLeft: '0px',
-  marginRight: '0px',
-  marginBottom: '0px',
   padding: '6px',
 };
 

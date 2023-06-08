@@ -10,10 +10,11 @@ import { EyeOutlined, EditOutlined } from '@ant-design/icons';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from "react-highlight-words";
+import type { TableRowSelection } from 'antd/es/table/interface';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { BIcon } from './bicons';
 
-const pagination = <Pagination showQuickJumper defaultCurrent={2} total={500}/>
+const pagination = <Pagination showQuickJumper defaultCurrent={2} total={11}/>
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -24,11 +25,11 @@ interface TableParams {
 
 // Тип объекта
 type Object = {
-  key?: React.Key | null | undefined,
-  id?: number | null | undefined,
-  name?: string | null | undefined,
-  code?: string | null | undefined,
-  workflow_id?: number | null | undefined,
+  key: React.Key,
+  id: number,
+  name: string | null | undefined,
+  code: string | null | undefined,
+  workflow_id: number | null | undefined,
   comment?: string | null | undefined,
   isHistory?: boolean | number | null | undefined,
   isSystem?: boolean | number | null | undefined,
@@ -53,15 +54,47 @@ const ObjectTable: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+  const [data, setData] = useState<Object[]>();
+  const [total, setTotal] = useState(11);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
       current: 1,
       pageSize: 10,
+      total:11,
+      showSizeChanger: true
     },
   });
 
-  const onChange: TableProps<Object>['onChange'] = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+  interface TableParams {
+    pagination?: TablePaginationConfig;
+    sortField?: string;
+    sortOrder?: string;
+    filters?: Record<string, FilterValue>;
+  }
+
+  const getRandomuserParams = (params: TableParams) => ({
+    results: params.pagination?.pageSize,
+    page: params.pagination?.current,
+    ...params,
+  });
+
+  const onChange: TableProps<Object>['onChange'] = (
+      pagination: TablePaginationConfig,
+      filters: Record<string, FilterValue> | any,
+      sorter: SorterResult<Object> | any,
+      extra: any) => {
+        console.log('params!!!!!!!!!!!!', pagination);
+
+        setTableParams({
+          pagination,
+          filters,
+          ...sorter,
+        });
+
+        // `dataSource` is useless since `pageSize` changed
+        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
+          setData([]);
+        }
   };
 
   const handleSearch = (
@@ -133,11 +166,14 @@ const ObjectTable: React.FC = () => {
     filterIcon: (filtered: boolean) => (
       <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
-    // onFilter: (value, record) => alert(value),
-      // record[dataIndex]
-      //   .toString()
-      //   .toLowerCase()
-      //   .includes((value as string).toLowerCase()),
+     // onFilter: (value, record) => {
+      // if (record[dataIndex] != null && record[dataIndex] != undefined) {
+      //   record[dataIndex]
+      //     .toString()
+      //     .toLowerCase()
+      //     .includes((value as string).toLowerCase())
+      // }
+     // },
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
@@ -164,7 +200,7 @@ const ObjectTable: React.FC = () => {
   // Обработка данных колонок из стора перед загрузкой
   useEffect(() => {
       let newColumns: any[] = [];
-
+      // console.log("columnsData ============== ", columnsData);
       newColumns = columnsData.map((cl) => {
 
         let dataIndex: any = "";
@@ -188,37 +224,33 @@ const ObjectTable: React.FC = () => {
             break;
           case "BUTTON":
             dataIndex = cl.iconName;
-            title = <BIcon id={cl.iconName as string} />;
+            title = null;
             break;
           default:
-            dataIndex = null;
-        }
+            break;
+        };
 
-        return cl.actionType === "TEXT" ? {
+        const SearchProps = cl.filterAllowed ? getColumnSearchProps(dataIndex) : null;
+
+        return {
           key: cl.id as number,
           title: title,
           dataIndex: dataIndex as string,
-          sorter: sorter,
-          ...getColumnSearchProps(dataIndex)
-        } : {
-          key: cl.id as number,
-          title: title,
-          dataIndex: dataIndex as string,
-          sorter: sorter
+          sorter: cl.sortAllowed ? true : false,
+          ...SearchProps
         }
       });
-
       setColumnsTable(newColumns);
   }, [columnsData]);
 
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
-    console.log("++++++++ Объекты из хранилища useEffect objects = ", objects );
+    // console.log("++++++++ Объекты из хранилища useEffect objects = ", objects );
     setDataTable( objects.map((object) => (
         {
           'key': object.id,
-          'EyeOutlined': <Tooltip title="Просмотр"><Button type="text" icon={<BIcon id={'EyeOutlined' as string} />} size={'small'} /></Tooltip>,
-          'FormOutlined': <Tooltip title="Редактировать"><Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} /></Tooltip>,
+          'EyeOutlined': <Tooltip color={AppColors.mainBlue} title="Просмотр"><Button type="text" icon={<BIcon id={'EyeOutlined' as string} />} size={'small'} /></Tooltip>,
+          'FormOutlined': <Tooltip color={AppColors.mainBlue} title="Редактировать"><Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} /></Tooltip>,
           ...object,
           'isHistory': <BIcon id={object.isHistory as string} />,
           'isSystem': <BIcon id={object.isSystem as string} />,
@@ -227,14 +259,24 @@ const ObjectTable: React.FC = () => {
      );
   }, [objects]);
 
+
+  const handleTableChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<string, FilterValue>,
+    sorter: SorterResult<Object>,
+  ) => {
+
+  };
+
   //-------------------------------------------------------------------
   useEffect(() => {
-    console.log(" \n\nЗагрузился список колонок = ", columnsTable );
+    // console.log(" \n\nЗагрузился список колонок = ", columnsTable );
   }, [columnsTable, setColumnsTable]);
 
   useEffect(() => {
-    console.log(" \n\nЗагрузились данные = ", dataTable );
+    // console.log(" \n\nЗагрузились данные = ", dataTable );
   }, [dataTable, setDataTable]);
+
 
   return (
     <ConfigProvider
@@ -253,7 +295,7 @@ const ObjectTable: React.FC = () => {
         columns={columnsTable}
         dataSource={dataTable}
         size={'small'}
-        style={{ margin: '10px' }}
+        style={{ marginLeft: '10px', marginRight: '10px' }}
         pagination={tableParams.pagination}
         onChange={onChange}
       />

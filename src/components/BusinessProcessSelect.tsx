@@ -1,17 +1,30 @@
 // Комбобокс с бизнес-прцессами
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { Select, ConfigProvider, Col, Row, Space } from 'antd';
+import { useDispatch } from 'react-redux';
 import { AppColors, LeftSpaceStyle } from './CssSettings';
+import { useAppSelector } from './../hooks/hook';
+import { changeActiveItem } from './../store/listWorkflowsSlice';
 
 export function BusinessProcessSelect() {
+  const BusinesProcesList = useAppSelector(state => state.workflow.list); // Получение данных из стора
+  const current = useAppSelector(state => state.workflow.active_item);
+  const dispatch = useDispatch();
 
   const onChange = (value: string) => {
-    console.log(`selected ${value}`);
+    console.log(`77777777777777777+selected ${value}`);
+    dispatch(changeActiveItem(value));
   };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
+  useEffect(() => {
+    // console.log(" 55555 =========== ", BusinesProcesList[0], "aaaaaa", BusinesProcesList);
+    // let value = BusinesProcesList[0] ? BusinesProcesList[0].name : "no";
+    // dispatch(changeActiveItem(value));
+  }, [ BusinesProcesList ]);
+
+  useEffect(() => {
+    // console.log(" 8888888 =========== ", BusinesProcesList[0], "aaaaaa", current);
+  }, [ current ]);
 
   return (
     <ConfigProvider
@@ -23,37 +36,11 @@ export function BusinessProcessSelect() {
       }}
     >
         <Select
-          showSearch
           style={{ marginBottom: 25, }}
           placeholder="Выберите Бизнес-процесс"
-          optionFilterProp="children"
           onChange={onChange}
-          onSearch={onSearch}
-          filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-          }
-          options={[
-            {
-              value: 'bp1',
-              label: 'Бизнес-процесс 1',
-            },
-            {
-              value: 'bp2',
-              label: 'Бизнес-процесс 2',
-            },
-            {
-              value: 'bp3',
-              label: 'Бизнес-процесс 3',
-            },
-            {
-              value: 'bp4',
-              label: 'Бизнес-процесс 4',
-            },
-            {
-              value: 'bp5',
-              label: 'Бизнес-процесс 5',
-            },
-          ]}
+          defaultValue={current}
+          options={BusinesProcesList.map((province) => ({ label: province.name, value: province.code }))}
         />
     </ConfigProvider>
   )

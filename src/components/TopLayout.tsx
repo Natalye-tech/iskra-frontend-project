@@ -15,15 +15,15 @@ export function TopLayout() {
         style: {color: AppColors.mainBg},
       },
       {
-        href: '/Screen',
+        href: '/DRAWER_OBJECT_LIST',
         title: (
           <>
-            <span>Монитор</span>
+            <span>Объекты</span>
           </>
         ),
       },
       {
-        title: 'Монитор обработки',
+        title: 'Список',
       },
     ];
 

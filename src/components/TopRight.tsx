@@ -24,16 +24,16 @@ export function TopRight() {
       }}
     >
       <Space style={TopRightSpaceStyle} size={6} align="center">
-        <Tooltip title="Справка">
+        <Tooltip color={AppColors.mainBlue} placement="bottom" title="Справка">
           <Button type="primary" icon={<QuestionCircleOutlined />} />
         </Tooltip>
-        <Tooltip title="Настройки">
+        <Tooltip color={AppColors.mainBlue} placement="bottom" title="Настройки">
           <Button type="primary" icon={<SettingOutlined />} />
         </Tooltip>
-        <Tooltip title="Обратная связь">
+        <Tooltip color={AppColors.mainBlue} placement="bottom" title="Обратная связь">
           <Button type="primary" icon={<MailOutlined />} />
         </Tooltip>
-        <Tooltip title="Войти">
+        <Tooltip color={AppColors.mainBlue} placement="bottom" title="Войти">
           <Button style={TopRightButtonStyle} size={size} shape="circle" type="primary" icon={<UserOutlined />} />
         </Tooltip>
       </Space>

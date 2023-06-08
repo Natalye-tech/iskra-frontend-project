@@ -1,28 +1,41 @@
 // Панель с кнопками управления (сверху панель второй уровень)
-import React, { useState } from 'react'
-import { Layout, Menu, ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';
+import React, { useState, useEffect } from 'react'
+import { Layout, ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';
 import { AppColors, HeaderButtonStyle, HeaderButtonStyleRight } from './CssSettings';
+import { useAppDispatch, useAppSelector } from './../hooks/hook';
+import { fetchActionTB } from './../store/actionSlice';
+import SearchObject from './SearchObject';
+import { BIcon } from './bicons';
 
-import {
-  FileAddOutlined,
-  SettingOutlined,
-  EyeOutlined,
-  FormOutlined,
-  DeleteOutlined,
-  ImportOutlined,
-  ExportOutlined,
-  ClearOutlined,
-  CopyOutlined,
-  CodeOutlined,
-  VerticalAlignBottomOutlined,
-  VerticalAlignTopOutlined
-} from '@ant-design/icons';
-import SearchObject from './SearchObject'
+// Построение кнопки из данных
+function getButton(
+  key?: React.Key,
+  title?: string,
+  url?: string | null,
+  icon?: React.ReactNode | null | undefined | any): React.ReactNode {
+  return (
+    <Tooltip color={AppColors.mainBlue} placement="bottom" key={key} title={title}>
+      <Button style={{color: AppColors.mainBlue}} type="primary" icon={icon} onClick={() => {alert(url)}} />
+    </Tooltip>) as React.ReactNode;
+};
 
-const { Header } = Layout;
+// Тулбар
+const TopButtosLayout: React.FC = () => {
+  const actions = useAppSelector(state => state.actionstb.list); // Получение данных из стора
+  const [dataButtonItems, setDataButtonItems] = useState<React.ReactNode[]>([]); // Преобразование данных из стора
 
-export function TopButtosLayout() {
-  const { Header } = Layout;
+  // Построение массива с кнопками
+  useEffect(() => {
+    const newButtonItems: React.ReactNode[] | any[] = actions.map((buttonElem, index) => {
+       return getButton(
+         buttonElem.id as React.Key,
+         buttonElem.name as string,
+         buttonElem.url as string,
+         <BIcon id={buttonElem.iconName} />,
+       )
+    });
+    setDataButtonItems(newButtonItems);
+  }, [actions]);
 
   return (
     <Row>
@@ -37,35 +50,8 @@ export function TopButtosLayout() {
             }}
           >
             <Space size={6} align="start">
-              <Tooltip title="Создать">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<FileAddOutlined />} />
-              </Tooltip>
-              <Tooltip title="Просмотр">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<EyeOutlined />} />
-              </Tooltip>
-              <Tooltip title="Изменить">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<FormOutlined />} />
-              </Tooltip>
-              <Tooltip title="Удалить">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<DeleteOutlined />} />
-              </Tooltip>
-              <Tooltip title="Импорт">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<VerticalAlignBottomOutlined />} />
-              </Tooltip>
-              <Tooltip title="Экспорт">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<VerticalAlignTopOutlined />} />
-              </Tooltip>
-              <Tooltip title="Очистить">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<ClearOutlined />} />
-              </Tooltip>
-              <Tooltip title="Копировать">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<CopyOutlined />} />
-              </Tooltip>
-              <Tooltip title="Выгрузить в скрипт">
-                <Button style={{color: AppColors.mainBlue}} type="primary" icon={<CodeOutlined />} />
-              </Tooltip>
+              {dataButtonItems}
             </Space>
-
           </ConfigProvider>
       </Col>
       <Col style={HeaderButtonStyleRight} flex='200px'>

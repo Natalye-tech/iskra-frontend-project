@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
+
 type MenuItem = {
   gid?: number | null;
   id: number | null;
@@ -8,7 +9,7 @@ type MenuItem = {
   code?: string | null;
   comment?: string | null;
   level?: number;
-  icon_name?: string | null;
+  iconName?: string | null;
   link?: string | null;
 }
 
@@ -19,10 +20,12 @@ type MenuItemState = {
   error_menu: string | null;
 }
 
+// http://localhost:303/menu
+
 export const fetchMenuItems = createAsyncThunk<MenuItem[], undefined, {rejectValue: string}>(
     'menuitems/fetchMenuItems',
     async function (_, { rejectWithValue }) {
-      const response = await fetch('http://localhost:303/menu');
+      const response = await fetch('http://localhost:8080/listActionDrawer');
 
       if (!response.ok) {
         return rejectWithValue('Server Error!');
