@@ -19,49 +19,6 @@ import { fetchMenuItems } from './store/menuSlice';
 import { fetchActionTB } from './store/actionSlice';
 import { fetchActionWorkflow } from './store/listWorkflowsSlice';
 
-// select * from ubp_core.fn_list_dict_action('DRAWER');
-// select * from ubp_core.dict_action where pid = 20;
-// update ubp_core.dict_action set icon_name = 'AuditOutlined' where id = 43;
-    // <meta name="viewport" content="initial-scale=1,width=device-width"/>
-
-    // Npavlovskaya - login iskra1
-//     Your identification has been saved in iskra
-// Your public key has been saved in iskra.pub
-// The key fingerprint is:
-// SHA256:ZzRJgr9v724xiihkdD7+jCqgCjfJps6avoHSQqlC8OU NPavlovskaya@NPavlovskaya
-// The key's randomart image is:
-// +--[ED25519 256]--+
-// |       .. .      |
-// |      .  o .     |
-// |.   .  .  +      |
-// |...o. . .. .     |
-// | +..Eo  S.o      |
-// |*o .o o .o  o    |
-// |OoBo . o o . o   |
-// |**o.. oo. + .    |
-// |X=...o..o. =+    |
-// +----[SHA256]-----+
-
-// IskraRsa1
-// Your identification has been saved in iskra_rsa
-// Your public key has been saved in iskra_rsa.pub
-// The key fingerprint is:
-// SHA256:OlhpGdyx0C34W1kPE40vwtJhIcKVzlbEFjmYMlVCyhQ NPavlovskaya@NPavlovskaya
-// The key's randomart image is:
-// +---[RSA 4096]----+
-// |     .EBBO=+.+   |
-// |     +==*=X = .  |
-// |      =*oB = =   |
-// |       +* * . o  |
-// |      =.S+ . .   |
-// |     + ..        |
-// |    . o          |
-// |       .         |
-// |                 |
-// +----[SHA256]-----+
-
-
-
 function App() {
   // const { loading_menu, error_menu } = useAppSelector(state => state.menuitems);
   const dispatch = useAppDispatch();
