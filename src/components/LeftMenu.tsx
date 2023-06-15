@@ -36,17 +36,7 @@ function getItem(
 ): MenuItem {
   // console.log('-----------icon', icon);
   if (icon === null) icon = 'StarOutlined';
-  return {
-    label,
-    key,
-    icon,
-    style,
-    children,
-    link,
-    level,
-    id,
-    pid
-  } as MenuItem;
+  return {label, key, icon, style, children, link, level, id, pid } as MenuItem;
 };
 
 const LeftMenu: React.FC = () => {
@@ -119,8 +109,9 @@ const LeftMenu: React.FC = () => {
     // }
     // else
     // {
-      dispatch(changeActiveMenuItem(e.key));
-      navigate("/" + e.key);
+      const key: string = e.key.replace('DRAWER_', '');
+      dispatch(changeActiveMenuItem(key));
+      navigate("/" + key);
     // }
   };
 
@@ -135,7 +126,8 @@ const LeftMenu: React.FC = () => {
             alt='Искра ФД'
             width={collapsed ? '45px' : '156px'}
             height='28px'
-            src={collapsed ? '/img/iskra_znak.svg' : '/img/iskra1.svg'}></img>
+            src={collapsed ? '/img/iskra_znak.svg' : '/img/iskra1.svg'}>
+          </img>
         </Space>
 
         <ConfigProvider

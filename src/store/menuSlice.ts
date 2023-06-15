@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
-
 type MenuItem = {
   gid?: number | null;
   id: number | null;
@@ -19,8 +18,6 @@ type MenuItemState = {
   loading_menu: boolean;
   error_menu: string | null;
 }
-
-// http://localhost:303/menu
 
 export const fetchMenuItems = createAsyncThunk<MenuItem[], undefined, {rejectValue: string}>(
     'menuitems/fetchMenuItems',

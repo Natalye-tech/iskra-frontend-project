@@ -1,62 +1,21 @@
 // Форма поиска по объектам
 import React, { useState } from 'react';
-import { Select } from 'antd';
-import qs from 'qs';
-import type { SelectProps } from 'antd';
+import { Input } from 'antd';
 import { AppColors } from './CssSettings';
+import { useAppSelector } from './../hooks/hook';
+import { useDispatch } from 'react-redux';
+import { changeSearchSubstring } from './../store/objectSlice';
 
-let timeout: ReturnType<typeof setTimeout> | null;
-let currentValue: string;
+export const SearchObject: React.FC = () => {
+  const dispatch = useDispatch();
+  const current = useAppSelector(state => state.objects.search_substring);
 
-const fetch = (value: string, callback: Function) => {
-  if (timeout) {
-    clearTimeout(timeout);
-    timeout = null;
-  }
-  currentValue = value;
-
-  const fake = () => {
-    const str = qs.stringify({
-      code: 'utf-8',
-      q: value,
-    });
-  };
-  if (value) {
-    timeout = setTimeout(fake, 300);
-  } else {
-    callback([]);
-  }
-};
-
-export const SearchObject: React.FC<{ placeholder: string; style: React.CSSProperties }> = (props) => {
-  const [data, setData] = useState<SelectProps['options']>([]);
-  const [value, setValue] = useState<string>();
-
-  const handleSearch = (newValue: string) => {
-    fetch(newValue, setData);
-  };
-
-  const handleChange = (newValue: string) => {
-    setValue(newValue);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      dispatch(changeSearchSubstring(e.target.value));
   };
 
   return (
-    <Select
-      showSearch
-      value={value}
-      placeholder={props.placeholder}
-      style={props.style}
-      defaultActiveFirstOption={false}
-      showArrow={false}
-      filterOption={false}
-      onSearch={handleSearch}
-      onChange={handleChange}
-      notFoundContent={null}
-      options={(data || []).map((d) => ({
-        value: d.value,
-        label: d.text,
-      }))}
-    />
+     <Input placeholder="Поиск..." onChange={onChange} style={{ width: 200 }} />
   );
 };
 

@@ -19,11 +19,10 @@ type Object = {
 
 type ObjectsState = {
   list: Object[] | any[];
+  search_substring: string | null | undefined;
   loading: boolean;
   error: string | null;
 }
-
-// http://localhost:303/objects
 
 export const fetchObjects = createAsyncThunk<Object[] | any[], undefined, {rejectValue: string}>(
     'object/fetchObjects',
@@ -39,6 +38,7 @@ export const fetchObjects = createAsyncThunk<Object[] | any[], undefined, {rejec
 
 const initialState: ObjectsState = {
   list: [],
+  search_substring: '',
   loading: false,
   error: null,
 }
@@ -46,7 +46,11 @@ const initialState: ObjectsState = {
 const objectSlice = createSlice({
   name: 'objects',
   initialState,
-  reducers: {},
+  reducers: {
+    changeSearchSubstring(state, action) {
+        state.search_substring = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchObjects.pending, (state) => {
@@ -64,6 +68,7 @@ const objectSlice = createSlice({
   }
 });
 
+export const {changeSearchSubstring} = objectSlice.actions;
 export default objectSlice.reducer;
 
 function isError(action: AnyAction) {

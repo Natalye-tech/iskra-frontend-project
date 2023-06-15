@@ -56,7 +56,7 @@ const actionWorkflowSlice = createSlice({
       .addCase(fetchActionWorkflow.fulfilled, (state, action) => {
         state.list = action.payload;
         changeActiveItem(action.payload[0].code);
-        console.log("!!!!!!!!! state.active_item ", state.active_item);
+        // console.log("!!!!!!!!! state.active_item ", state.active_item);
         state.loading = false;
       })
       .addMatcher(isError, (state, action: PayloadAction<string>) => {

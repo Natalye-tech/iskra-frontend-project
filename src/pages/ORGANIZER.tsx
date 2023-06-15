@@ -1,10 +1,10 @@
 import React from 'react'
 
-export function DRAWER_AUDIT() {
+export function ORGANIZER() {
   const DivStyle = {
     margin: '20px',
   };
   return (
-    <div style={DivStyle}>Аудит</div>
+    <div style={DivStyle}>Органайзер</div>
   )
 }

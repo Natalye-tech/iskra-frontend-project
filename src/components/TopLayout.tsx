@@ -15,12 +15,8 @@ export function TopLayout() {
         style: {color: AppColors.mainBg},
       },
       {
-        href: '/DRAWER_OBJECT_LIST',
-        title: (
-          <>
-            <span>Объекты</span>
-          </>
-        ),
+        href: '/OBJECT_LIST/OBJECT_LIST',
+        title: (<><span>Объекты</span></>),
       },
       {
         title: 'Список',

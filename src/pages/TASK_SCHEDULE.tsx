@@ -1,6 +1,6 @@
 import React from 'react'
 
-export function DRAWER_TASK_SCHEDULE() {
+export function TASK_SCHEDULE() {
   const DivStyle = {
     margin: '20px',
   };

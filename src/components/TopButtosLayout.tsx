@@ -1,6 +1,7 @@
 // Панель с кнопками управления (сверху панель второй уровень)
 import React, { useState, useEffect } from 'react'
 import { Layout, ConfigProvider, Col, Row, Button, Space, Tooltip } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { AppColors, HeaderButtonStyle, HeaderButtonStyleRight } from './CssSettings';
 import { useAppDispatch, useAppSelector } from './../hooks/hook';
 import { fetchActionTB } from './../store/actionSlice';
@@ -23,6 +24,7 @@ function getButton(
 const TopButtosLayout: React.FC = () => {
   const actions = useAppSelector(state => state.actionstb.list); // Получение данных из стора
   const [dataButtonItems, setDataButtonItems] = useState<React.ReactNode[]>([]); // Преобразование данных из стора
+  const navigate = useNavigate();
 
   // Построение массива с кнопками
   useEffect(() => {
@@ -36,6 +38,8 @@ const TopButtosLayout: React.FC = () => {
     });
     setDataButtonItems(newButtonItems);
   }, [actions]);
+
+  const onSearch = (value: string) => console.log(value);
 
   return (
     <Row>
@@ -56,7 +60,7 @@ const TopButtosLayout: React.FC = () => {
       </Col>
       <Col style={HeaderButtonStyleRight} flex='200px'>
         <Space size={6} align="start">
-          <SearchObject placeholder="текст для поиска..." style={{ width: 200 }}/>
+          <SearchObject />
         </Space>
       </Col>
     </Row>
