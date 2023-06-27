@@ -1,18 +1,25 @@
 // Таблица объектов
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Tooltip, ConfigProvider, Button, Input, Space, TableProps, InputRef, Pagination, PaginationProps } from 'antd';
+import { Table, Tooltip, ConfigProvider, Button, Input, Space, Col, Row, TableProps, InputRef, Pagination, PaginationProps } from 'antd';
 import type { ColumnsType, FilterValue, SorterResult, ColumnType } from 'antd/es/table/interface';
-import { AppColors } from './../../components/CssSettings';
+import { AppColors, HeaderButtonStyle } from './../../components/CssSettings';
 import { useAppDispatch, useAppSelector } from './../../hooks/hook';
 import { fetchObjects } from './../../store/objectSlice';
 import { fetchColumnItems } from './../../store/columnSlice';
-import { EyeOutlined, EditOutlined } from '@ant-design/icons';
+import { getObject } from './../../store/objectSlice';
+import {
+  EyeOutlined,
+  EditOutlined,
+  CloseSquareOutlined,
+  ClearOutlined } from '@ant-design/icons';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { SearchOutlined, FilterFilled } from '@ant-design/icons';
+import { SearchOutlined, FilterFilled, CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import Highlighter from "react-highlight-words";
 import type { TableRowSelection } from 'antd/es/table/interface';
 import type { TablePaginationConfig } from 'antd/es/table';
 import { BIcon } from './../../components/bicons';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -31,7 +38,7 @@ type Object = {
   isHistory?: boolean | number | null,
   isSystem?: boolean | number | null,
   isExport?: boolean | number | null,
-  status?: number | null,
+  status?:  boolean | number | null,
   dtCreate?: string  | null,
   dtUpdate?: string | null,
   userCreate?: string | null,
@@ -49,12 +56,13 @@ const ObjectTable: React.FC = () => {
   const [dataTable, setDataTable] = useState<Object[] | undefined>([]); // Преобразование данных из стора
   const { loading, error } = useAppSelector(state => state.objects);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const [data, setData] = useState<Object[]>();
   const [total, setTotal] = useState(0);
+  const currentWorkflowId = useAppSelector(state => state.workflow.active_item);
   const [tableParams, setTableParams] = useState<TableParams>({
         pagination: {
           current: 1,
@@ -64,6 +72,7 @@ const ObjectTable: React.FC = () => {
           pageSizeOptions: [ 10, 20, 50, 100 ]
         },
   });
+
 
   useEffect(() => {
      // console.log('search_substring ************* ', search_substring);
@@ -96,14 +105,30 @@ const ObjectTable: React.FC = () => {
      else {
        setDataTable( objects_.map((object) => (
            {
-             'EyeOutlined' :
-                <Tooltip color={AppColors.mainBlue} title="Просмотр">
-                  <Button type="text" icon={<BIcon id={'EyeOutlined' as string} />} size={'small'} />
-                </Tooltip>,
+             'EyeOutlined':
+               <Tooltip color={AppColors.mainBlue} title="Просмотр">
+                 <Button
+                   onClick={() => {
+                       navigate('/object_data', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                       dispatch(getObject(object.id));
+                     }
+                   }
+                   type="text"
+                   icon={<BIcon id={'EyeOutlined' as string} />}
+                   size={'small'} />
+               </Tooltip>,
              'FormOutlined':
-                <Tooltip color={AppColors.mainBlue} title="Редактировать">
-                  <Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} />
-                </Tooltip>,
+               <Tooltip color={AppColors.mainBlue} title="Редактировать">
+                 <Button
+                   onClick={() => {
+                       navigate('/addObject', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                       dispatch(getObject(object.id));
+                     }
+                   }
+                   type="text"
+                   icon={<BIcon id={'FormOutlined' as string} />}
+                   size={'small'} />
+               </Tooltip>,
              ...object,
              'key': object.id,
              'id': '',
@@ -124,6 +149,8 @@ const ObjectTable: React.FC = () => {
     confirm: (param?: FilterConfirmProps) => void,
     dataIndex: DataIndex,
   ) => {
+    // console.log("/n handleSearch 00000000000 selectedKeys = ", selectedKeys);
+    // console.log("/n handleSearch 00000000000 dataIndex = ", dataIndex);
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -134,58 +161,44 @@ const ObjectTable: React.FC = () => {
     setSearchText('');
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<Object> => ({
+  const getColumnSearchProps = (dataIndex: DataIndex, title?: string): ColumnType<Object> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+      <div style={{ padding: 8, paddingTop: 8, paddingBottom: 8, paddingRight: 8, width: 250 }} onKeyDown={(e) => e.stopPropagation()}>
+
         <Input
+          allowClear
           ref={searchInput}
-          placeholder={`Поиск ${dataIndex}`}
+          placeholder={`Фильтровать по...`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
         />
-        <Space>
+
+        <Space style={{ margin: 8, marginBottom: 0,  marginLeft: 75 }}>
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined />}
             size="small"
-            style={{ width: 90 }}
           >
-            Поиск
+            Применить
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Очистить
-          </Button>
-          <Button
-            type="link"
-            size="small"
             onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
+              clearFilters && handleReset(clearFilters);
+              handleSearch(selectedKeys as string[], confirm, dataIndex);
             }}
-          >
-            Фильтр
-          </Button>
-          <Button
-            type="link"
             size="small"
-            onClick={() => { close(); }}
           >
-            Закрыть
+            Отменить
           </Button>
         </Space>
       </div>
     ),
+
     filterIcon: (filtered: boolean) => (
       <FilterFilled style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
+
     onFilter: (value, record) => {
         let recField: string = record[dataIndex] as string;
         return recField.toString().toLowerCase().includes((value as string).toLowerCase());
@@ -197,6 +210,7 @@ const ObjectTable: React.FC = () => {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
+
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -222,13 +236,20 @@ const ObjectTable: React.FC = () => {
   const onChange: TableProps<Object>['onChange'] = (
       pagination: TablePaginationConfig,
       filters: Record<string, FilterValue> | any,
-      sorter: SorterResult<Object> | any,
+      sorter: any,
       extra: any) => {
+        //
+        console.log(" filters = ", filters);
+        console.log(" dataTable = ", dataTable);
+        console.log(" total = ", total);
+        console.log(" extra = ", extra);
+
         setTableParams({
-          pagination
+          pagination,
+          filters,
         });
         if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-          setData([]);
+
         }
   };
 
@@ -276,22 +297,26 @@ const ObjectTable: React.FC = () => {
               else return a[dataIndex].toString().localeCompare(b[dataIndex].toString(), ru, en);
             };
             let dataIndex_: DataIndex = cl.dataField as DataIndex;
-            search = {...getColumnSearchProps(dataIndex_)};
+            search = {...getColumnSearchProps(dataIndex_, title)};
             break;
 
           case "ICON_CHECK":
             dataIndex = cl.dataField;
-            title = <BIcon id={cl.iconName as string} />;
-            filtres = dataIndex === "status" ?
-              [{ text: cl.name + ' - 100', value: 100 }, { text: cl.name + ' - не является', value: 0 }] :
-              [{ text: cl.name + ' - является', value: 1 }, { text: cl.name + ' - не является', value: 0 }];
+            width = 20;
+            title =
+                <Tooltip color={AppColors.mainBlue} title={cl.name}>
+                  <Button style={{ marginLeft: 0, marginRight: 0 }} type="text" icon={<BIcon id={cl.iconName as string} />}/>
+                </Tooltip>;
+            filtres = [{ text: ' - является', value: 1 }, { text: ' - не является', value: 0 }];
             onFilter = (value: any, record: Record<number | string, FilterValue>) => {
-              return record[dataIndex].toString().indexOf(value.toString()) === 0};
-            render = dataIndex !== "status" ? (text: string) => <BIcon id={text} /> : null;
+              return record[dataIndex].toString().indexOf(value.toString()) === 0
+            };
+            render = (text: string) => <Tooltip color={AppColors.mainBlue} title="Редактировать"><BIcon id={text} /></Tooltip>;
             break;
 
           case "BUTTON":
             dataIndex = cl.iconName;
+            width = 20;
             title = null;
             break;
           default: break;
@@ -312,17 +337,35 @@ const ObjectTable: React.FC = () => {
       setColumnsTable(newColumns);
   }, [columnsData]);
 
+   // onClick={console.log(object.id)}
+
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
     setDataTable( objects.map((object) => (
         {
           'EyeOutlined':
             <Tooltip color={AppColors.mainBlue} title="Просмотр">
-              <Button type="text" icon={<BIcon id={'EyeOutlined' as string} />} size={'small'} />
+              <Button
+                onClick={() => {
+                    navigate('/object_data', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                    dispatch(getObject(object.id));
+                  }
+                }
+                type="text"
+                icon={<BIcon id={'EyeOutlined' as string} />}
+                size={'small'} />
             </Tooltip>,
           'FormOutlined':
             <Tooltip color={AppColors.mainBlue} title="Редактировать">
-              <Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} />
+              <Button
+                onClick={() => {
+                    navigate('/addObject', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                    dispatch(getObject(object.id));
+                  }
+                }
+                type="text"
+                icon={<BIcon id={'FormOutlined' as string} />}
+                size={'small'} />
             </Tooltip>,
           ...object,
           'key': object.id,
@@ -361,7 +404,7 @@ const ObjectTable: React.FC = () => {
         columns={columnsTable}
         dataSource={dataTable}
         size={'small'}
-        style={{ marginLeft: '10px', marginRight: '10px' }}
+        style={{ marginLeft: '8px', marginRight: '8px', marginTop: '0px' }}
         pagination={tableParams.pagination}
         onChange={onChange}
       />

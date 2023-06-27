@@ -5,6 +5,6 @@ export function AUDIT() {
     margin: '20px',
   };
   return (
-    <div style={DivStyle}>Аудит</div>
+     <div style={DivStyle}>Аудит</div>
   )
 }

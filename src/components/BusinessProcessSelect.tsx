@@ -3,16 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { Select, ConfigProvider, Col, Row, Space } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AppColors, LeftSpaceStyle } from './CssSettings';
-import { useAppSelector } from './../hooks/hook';
+import { useAppDispatch, useAppSelector } from './../hooks/hook';
 import { changeActiveItem } from './../store/listWorkflowsSlice';
+import { getObject } from './../store/objectSlice';
 
 export function BusinessProcessSelect() {
   const BusinesProcesList = useAppSelector(state => state.workflow.list); // Получение данных из стора
   const current = useAppSelector(state => state.workflow.active_item);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onChange = (value: string) => {
-    console.log(`77777777777777777+selected ${value}`);
+    // console.log(`77777777777777777+selected ${value}`);
     dispatch(changeActiveItem(value));
   };
 

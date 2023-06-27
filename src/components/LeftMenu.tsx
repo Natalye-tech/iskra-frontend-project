@@ -110,6 +110,7 @@ const LeftMenu: React.FC = () => {
     // else
     // {
       const key: string = e.key.replace('DRAWER_', '');
+      console.log('click ========', key);
       dispatch(changeActiveMenuItem(key));
       navigate("/" + key);
     // }

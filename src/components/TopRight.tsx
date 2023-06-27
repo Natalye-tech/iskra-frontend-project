@@ -39,4 +39,4 @@ export function TopRight() {
       </Space>
     </ConfigProvider>
   )
-}
+};

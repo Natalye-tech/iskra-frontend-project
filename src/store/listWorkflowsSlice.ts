@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxjs/toolkit';
 
 type Workflow = {
-  key?: React.Key | null | undefined,
-  id?: number | null | undefined,
-  name?: string | null | undefined,
-  code?: string | null | undefined,
+  key?: React.Key | null,
+  id: number | null,
+  name: string | null,
+  code: string | null,
   dt_create?: string | null | undefined,
   dt_update?: string | null | undefined,
   user_create?: string | null | undefined,
@@ -13,7 +13,7 @@ type Workflow = {
 
 type ActionWorkflowState = {
   list: Workflow[] | any[];
-  active_item: string;
+  active_item: string | null;
   loading: boolean;
   error: string | null;
 };

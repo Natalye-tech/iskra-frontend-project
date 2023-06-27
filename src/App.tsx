@@ -9,6 +9,9 @@ import {TASK_MONITOR} from './pages/TASK_MONITOR'
 import {TASK_AUDIT} from './pages/TASK_AUDIT'
 import {ORGANIZER} from './pages/ORGANIZER'
 import {AUDIT} from './pages/AUDIT'
+import {ADDOBJECT} from './pages/ADD_OBJECT'
+import {OBJECTEDIT} from './pages/OBJECT_EDIT'
+import {OBJECTDATA} from './pages/OBJECT_DATA'
 import {TopLayout} from './components/TopLayout'
 import TopButtosLayout from './components/TopButtosLayout';
 import LeftMenu from './components/LeftMenu';
@@ -34,7 +37,7 @@ function App() {
         <LeftMenu />
         <Layout style={MainLayoutStyle_}>
           <TopLayout />
-          <TopButtosLayout />
+
           <Layout style={ContentLayoutStyle}>
             <Routes>
               <Route path="/" element={ <OBJECT_LIST /> } />
@@ -47,6 +50,9 @@ function App() {
               <Route path="/TASK_AUDIT" element={ <TASK_AUDIT /> } />
               <Route path="/ORGANIZER" element={ <ORGANIZER /> } />
               <Route path="/AUDIT" element={ <AUDIT /> } />
+              <Route path="/addObject" element={ <ADDOBJECT /> } />
+              <Route path="/object_data" element={ <OBJECTDATA /> } />
+              <Route path="/object_edit" element={ <OBJECTEDIT /> } />
             </Routes>
           </Layout>
         </Layout>

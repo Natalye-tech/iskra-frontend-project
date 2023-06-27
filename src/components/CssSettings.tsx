@@ -138,6 +138,16 @@ export const HeaderButtonStyle: React.CSSProperties = {
   padding: '6px',
 };
 
+// Стили левой части header - второй уровень с кнопками на странице "Конструктор объектов"
+export const HeaderButtonStyleAddObject: React.CSSProperties = {
+  textAlign: 'left',
+  color: AppColors.mainBlue,
+  height: 45,
+  backgroundColor: AppColors.mainBg,
+  padding: '8px',
+  paddingTop: '11px',
+};
+
 // Стили левой части header - второй уровень с кнопками правая часть с панелью поиска по объектам
 export const HeaderButtonStyleRight: React.CSSProperties = {
   textAlign: 'left',
