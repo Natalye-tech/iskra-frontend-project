@@ -2,10 +2,10 @@ import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxj
 
 type Object = {
   key?: React.Key | null | undefined,
-  id: number | null | undefined,
-  name: string | null | undefined,
-  code: string | null | undefined,
-  workflow_id: number | null | undefined,
+  id: number | null,
+  name: string | null,
+  code: string | null,
+  workflow_id: number | null,
   comment?: string | null | undefined,
   isHistory?: boolean | number | null | undefined,
   isSystem?: boolean | number | null | undefined,
@@ -91,6 +91,7 @@ const objectSlice = createSlice({
   reducers: {
     changeSearchSubstring(state, action) {
         state.search_substring = action.payload;
+        // console.log("state.search_substring!!!!!!!!!! ", state.search_substring);
     },
     getObject(state, action) {
         if (action.payload) {

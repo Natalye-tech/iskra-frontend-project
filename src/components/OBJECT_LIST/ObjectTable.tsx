@@ -21,13 +21,7 @@ import { BIcon } from './../../components/bicons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Record<string, FilterValue>;
-};
-
+// Интерфейс объекта - записи в таблице
 type Object = {
   key: React.Key,
   id: number,
@@ -51,7 +45,6 @@ const ObjectTable: React.FC = () => {
   const columnsData = useAppSelector(state => state.columns.list); // Получение данных для колонок из стора
   const [columnsTable, setColumnsTable] = useState<ColumnsType<Object> | ColumnsType<any>>();  // Преобразование для данных из стора
   const objects = useAppSelector(state => state.objects.list); // Получение данных из стора
-  const objects_ = useAppSelector(state => state.objects.list); // Получение данных из стора (для поиска)
   const search_substring = useAppSelector(state => state.objects.search_substring);
   const [dataTable, setDataTable] = useState<Object[] | undefined>([]); // Преобразование данных из стора
   const { loading, error } = useAppSelector(state => state.objects);
@@ -73,15 +66,23 @@ const ObjectTable: React.FC = () => {
         },
   });
 
+  // Интерфейс параметров таблицы
+  interface TableParams {
+    pagination?: TablePaginationConfig;
+    sortField?: string;
+    sortOrder?: string;
+    filters?: Record<number | string | boolean | any, FilterValue>;
+  }
 
+  // Поиск по наименованию, коду и комментариям
   useEffect(() => {
-     // console.log('search_substring ************* ', search_substring);
      if ( search_substring && search_substring.toString().length > 2 ) {
-       setDataTable(objects.filter(
-         object => object.name.toString().toLowerCase().includes((search_substring as string).toLowerCase()) ||
-         object.code.toString().toLowerCase().includes((search_substring as string).toLowerCase()) ||
-         object.comment.toString().toLowerCase().includes((search_substring as string).toLowerCase())
-       ).map((object_) => (
+
+       const objects1 = objects.filter(
+             object => object.name.toString().toLowerCase().includes((search_substring as string).toLowerCase()) ||
+             object.code.toString().toLowerCase().includes((search_substring as string).toLowerCase()) ||
+             object.comment.toString().toLowerCase().includes((search_substring as string).toLowerCase())
+          ).map((object) => (
            {
              'EyeOutlined' :
                 <Tooltip color={AppColors.mainBlue} title="Просмотр">
@@ -91,76 +92,79 @@ const ObjectTable: React.FC = () => {
                 <Tooltip color={AppColors.mainBlue} title="Редактировать">
                   <Button type="text" icon={<BIcon id={'FormOutlined' as string} />} size={'small'} />
                 </Tooltip>,
-             ...object_,
-             'key': object_.id + "_",
-             'id': '',
-             'isHistory': object_.isHistory,
-             'isSystem': object_.isSystem,
-             'isExport': object_.isExport,
-             } as Object)
-       ));
-       setTotal(objects.length);
-     }
-
-     else {
-       setDataTable( objects_.map((object) => (
-           {
-             'EyeOutlined':
-               <Tooltip color={AppColors.mainBlue} title="Просмотр">
-                 <Button
-                   onClick={() => {
-                       navigate('/object_data', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
-                       dispatch(getObject(object.id));
-                     }
-                   }
-                   type="text"
-                   icon={<BIcon id={'EyeOutlined' as string} />}
-                   size={'small'} />
-               </Tooltip>,
-             'FormOutlined':
-               <Tooltip color={AppColors.mainBlue} title="Редактировать">
-                 <Button
-                   onClick={() => {
-                       navigate('/addObject', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
-                       dispatch(getObject(object.id));
-                     }
-                   }
-                   type="text"
-                   icon={<BIcon id={'FormOutlined' as string} />}
-                   size={'small'} />
-               </Tooltip>,
              ...object,
-             'key': object.id,
+             'key': object.id + "_",
              'id': '',
              'isHistory': object.isHistory,
              'isSystem': object.isSystem,
              'isExport': object.isExport,
-             } as Object))
-        );
-        setTotal(objects_.length);
-     }
+             } as Object)
+       );
+       setDataTable(objects1);
+       setTotal(objects1.length);
+    }
+    else {
+      setDataTable_();
+    }
   }, [search_substring]);
 
+  // Формирование данных для занесения в таблицу (как получено с сервера)
+  function setDataTable_() {
+    setDataTable( objects.map((object) => (
+        {
+          'EyeOutlined':
+            <Tooltip color={AppColors.mainBlue} title="Просмотр">
+              <Button
+                onClick={() => {
+                    navigate('/object_data', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                    dispatch(getObject(object.id));
+                  }
+                }
+                type="text"
+                icon={<BIcon id={'EyeOutlined' as string} />}
+                size={'small'} />
+            </Tooltip>,
+          'FormOutlined':
+            <Tooltip color={AppColors.mainBlue} title="Редактировать">
+              <Button
+                onClick={() => {
+                    navigate('/addObject', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
+                    dispatch(getObject(object.id));
+                  }
+                }
+                type="text"
+                icon={<BIcon id={'FormOutlined' as string} />}
+                size={'small'} />
+            </Tooltip>,
+          ...object,
+          'key': object.id,
+          'id': '',
+          'isHistory': object.isHistory,
+          'isSystem': object.isSystem,
+          'isExport': object.isExport,
+          } as Object))
+     );
+     setTotal(objects.length);
+  }
 
-  // search **********************************************
-
+  // Фильтры по полям **********************************************
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
     dataIndex: DataIndex,
   ) => {
-    // console.log("/n handleSearch 00000000000 selectedKeys = ", selectedKeys);
-    // console.log("/n handleSearch 00000000000 dataIndex = ", dataIndex);
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
 
+  // Сбос значения в фильтрах
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
   };
 
+  // Форма фильтра
   const getColumnSearchProps = (dataIndex: DataIndex, title?: string): ColumnType<Object> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8, paddingTop: 8, paddingBottom: 8, paddingRight: 8, width: 250 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -177,7 +181,9 @@ const ObjectTable: React.FC = () => {
         <Space style={{ margin: 8, marginBottom: 0,  marginLeft: 75 }}>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() => {
+              handleSearch(selectedKeys as string[], confirm, dataIndex);
+            }}
             size="small"
           >
             Применить
@@ -196,7 +202,7 @@ const ObjectTable: React.FC = () => {
     ),
 
     filterIcon: (filtered: boolean) => (
-      <FilterFilled style={{ color: filtered ? '#1677ff' : undefined }} />
+      <FilterFilled style={{ color: filtered ? '#7cf00' : undefined }} />
     ),
 
     onFilter: (value, record) => {
@@ -206,7 +212,6 @@ const ObjectTable: React.FC = () => {
 
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
-        // console.log('searchInput', searchInput);
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
@@ -223,42 +228,51 @@ const ObjectTable: React.FC = () => {
         text
       ),
   });
-  // ********************************************** search end
+  // **********************************************
 
-
-  interface TableParams {
-    pagination?: TablePaginationConfig;
-    sortField?: string;
-    sortOrder?: string;
-    filters?: Record<number | string | boolean | any, FilterValue>;
-  }
-
+  // Изменение параметров таблицы
   const onChange: TableProps<Object>['onChange'] = (
       pagination: TablePaginationConfig,
       filters: Record<string, FilterValue> | any,
       sorter: any,
       extra: any) => {
-        //
-        console.log(" filters = ", filters);
-        console.log(" dataTable = ", dataTable);
-        console.log(" total = ", total);
-        console.log(" extra = ", extra);
 
-        setTableParams({
-          pagination,
-          filters,
-        });
-        if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-
+      if (extra.action === "filter")
+      {
+        if (extra.currentDataSource)
+        {
+          setTotal(extra.currentDataSource.length);
+          pagination.total = extra.currentDataSource.length;
         }
+      }
+
+      setTableParams({
+        pagination,
+        filters,
+      });
   };
+
+  // Изменение количества записей в таблице
+  useEffect(() => {
+    // console.log("!!! total ", total);
+    const tParams: TableParams = {
+          pagination: {
+            current: 1,
+            pageSize: 10,
+            total: total,
+            showSizeChanger: true,
+            pageSizeOptions: [ 10, 20, 50, 100 ]
+          },
+    };
+    setTableParams(tParams);
+  }, [total, setTotal]);
 
   useEffect(() => {
     dispatch(fetchObjects());
     dispatch(fetchColumnItems());
   }, [dispatch]);
 
-  // Обработка данных колонок из стора перед загрузкой
+  // Создание колонок из данных колонок из стора перед загрузкой
   useEffect(() => {
       let newColumns: any[] = [];
       newColumns = columnsData.map((cl) => {
@@ -281,14 +295,6 @@ const ObjectTable: React.FC = () => {
 
           case "TEXT":
             dataIndex = cl.dataField as string;
-            // filtres = dataIndex === "code" ? ************** Фильтры, можно подключать вместо поиска
-            //   [{ text: 'test', value: 'test' }, { text: 'ACNT', value: 'ACNT' }] :
-            //   [{ text: 'Реестр', value: 'Реестр' },
-            //   { text: 'Разработка', value: 'Разработка' },
-            //   { text: 'Справочник', value: 'Справочник' },
-            //   { text: 'объект', value: 'объект' }];
-            // onFilter = (value: any, record: Record<number | string, FilterValue>) => {
-            //   return record[dataIndex].toString().includes(value)};
             filterSearch = true;
             const ru = new Intl.Locale('ru-RU');
             const en = new Intl.Locale('en-En');
@@ -337,52 +343,17 @@ const ObjectTable: React.FC = () => {
       setColumnsTable(newColumns);
   }, [columnsData]);
 
-   // onClick={console.log(object.id)}
-
   // Обработка данных из стора перед загрузкой
   useEffect(() => {
-    setDataTable( objects.map((object) => (
-        {
-          'EyeOutlined':
-            <Tooltip color={AppColors.mainBlue} title="Просмотр">
-              <Button
-                onClick={() => {
-                    navigate('/object_data', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
-                    dispatch(getObject(object.id));
-                  }
-                }
-                type="text"
-                icon={<BIcon id={'EyeOutlined' as string} />}
-                size={'small'} />
-            </Tooltip>,
-          'FormOutlined':
-            <Tooltip color={AppColors.mainBlue} title="Редактировать">
-              <Button
-                onClick={() => {
-                    navigate('/addObject', { state: { object_id: object.id, workflow_id: currentWorkflowId } });
-                    dispatch(getObject(object.id));
-                  }
-                }
-                type="text"
-                icon={<BIcon id={'FormOutlined' as string} />}
-                size={'small'} />
-            </Tooltip>,
-          ...object,
-          'key': object.id,
-          'id': '',
-          'isHistory': object.isHistory,
-          'isSystem': object.isSystem,
-          'isExport': object.isExport,
-          } as Object))
-     );
-     setTotal(objects.length);
+    setDataTable_();
   }, [objects]);
 
-  //-------------------------------------------------------------------
+  // Изменение колонок
   useEffect(() => {
     // console.log(" \n\nЗагрузился список колонок = ", columnsTable );
   }, [columnsTable, setColumnsTable]);
 
+  // Изменение данных
   useEffect(() => {
     // console.log(" \n\nЗагрузились данные = ", dataTable );
   }, [dataTable, setDataTable]);
