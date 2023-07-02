@@ -18,6 +18,7 @@ export const AddObjectForm: React.FC = () => {
   const [form] = Form.useForm();
   const current_object = useAppSelector(state => state.objects.current_object);
   const navigate = useNavigate();
+  const defId = useAppSelector(state => state.objects.current_object_id);
   const defCode = useAppSelector(state => state.objects.current_object_code);
   const defName = useAppSelector(state => state.objects.current_object_name);
   const defComment = useAppSelector(state => state.objects.current_object_comment);
@@ -31,7 +32,8 @@ export const AddObjectForm: React.FC = () => {
   };
 
   const onFinish = (value: any) => {
-    console.log(value);
+    console.log("SSSSSSSSSSSSSS", value.type);
+    value.type = Number(value.type);
     dispatch(addNewObject(value));
   };
 
@@ -112,6 +114,14 @@ export const AddObjectForm: React.FC = () => {
             <Col style={{ color: AppColors.darkGrey, padding: 12, }} flex="70%">
                 <Form.Item
                   wrapperCol={{ offset: 0 }}
+                  label="ID"
+                  name="id"
+                  initialValue={defId}
+                  >
+                  <Input/>
+                </Form.Item>
+                <Form.Item
+                  wrapperCol={{ offset: 0 }}
                   label="Мнемокод"
                   name="code"
                   initialValue={defCode}
@@ -136,12 +146,12 @@ export const AddObjectForm: React.FC = () => {
                   ]}>
                   <Input />
                 </Form.Item>
-                <Form.Item initialValue="object" name="type" label="Тип" rules={[{ required: true }]}>
+                <Form.Item initialValue='1' name="type" label="Тип" rules={[{ required: true }]}>
                   <Select
                     placeholder="Выберите тип из списка...">
-                    <Option value="object">Объект</Option>
-                    <Option value="registry">Реестр</Option>
-                    <Option value="system_reference">Системный справочник</Option>
+                    <Option value='1'>Объект</Option>
+                    <Option value='2'>Реестр</Option>
+                    <Option value='3'>Системный справочник</Option>
                   </Select>
                 </Form.Item>
                 <Form.Item initialValue={defComment} name="comment" label="Комментарий">

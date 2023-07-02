@@ -24,6 +24,7 @@ type ObjectsState = {
 
   search_substring: string | null | undefined;
   current_object: Object | null | any;
+  current_object_id: number | null;
   current_object_code: string | null;
   current_object_name: string | null;
   current_object_comment: string | null;
@@ -46,15 +47,40 @@ export const fetchObjects = createAsyncThunk<Object[] | any[], undefined, {rejec
 );
 
 
+// Для сохранения объекта надо передавать следующие параметры:
+//
+// Method:
+// saveObject
+//
+// Header:
+// "Accept: application/json"
+// "Content-Type:application/json"
+// Body:
+// {
+//   id: 1,
+//   name: "NEW_NAME",
+//   code: "NEW_CODE",
+//   comment: "NEW_COMMENT",
+//   isExport: 1,
+//   isHistory: 1,
+//   isSystem: 1,
+//   status: 1,
+//   type: 1
+// }
+//
+// Если в теле response есть поле "id", то это сохранение, иначе - создание
+
 export const addNewObject = createAsyncThunk<Object, Object, { rejectValue: string }>(
   'object/addNewObject',
 
   async function (object, { rejectWithValue }) {
-    // console.log("############### object ", object);
+      console.log("############### object ", object);
 
       const response = await fetch('http://localhost:8080/fn_check_object_code_unique', {
+        //mode: 'no-cors',
         method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(object)
@@ -76,6 +102,7 @@ const initialState: ObjectsState = {
 
   search_substring: '',
   current_object: null,
+  current_object_id: null,
   current_object_code: '',
   current_object_name: '',
   current_object_comment: '',
@@ -97,6 +124,7 @@ const objectSlice = createSlice({
         if (action.payload) {
           let obj = state.list.find(item => item.id == action.payload);
           state.current_object = obj;
+          state.current_object_id = obj.id;
           state.current_object_code = obj.code;
           state.current_object_name = obj.name;
           state.current_object_comment = obj.comment;
@@ -107,6 +135,7 @@ const objectSlice = createSlice({
         }
         else {
           state.current_object = null;
+          state.current_object_id = null;
           state.current_object_code = '';
           state.current_object_name = '';
           state.current_object_comment = '';
